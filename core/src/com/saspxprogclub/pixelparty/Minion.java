@@ -5,7 +5,11 @@ package com.saspxprogclub.pixelparty;
  */
 
 public class Minion extends GameObject {
-    protected Minion(int width, int height) {
+    Minion(int width, int height) {
         super(width, height);
+    }
+    Minion(int x, int y, int width, int height) {
+        super(width, height);
+        move(x, y);
     }
 }
