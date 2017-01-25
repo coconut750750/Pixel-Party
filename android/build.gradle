@@ -15,7 +15,7 @@ android {
         instrumentTest.setRoot('tests')
     }
     defaultConfig {
-        applicationId "com.progclub.pixelparty"
+        applicationId "com.saspxprogclub.pixelparty"
         minSdkVersion 8
         targetSdkVersion 25
     }
@@ -68,7 +68,7 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.progclub.pixelparty/com.progclub.pixelparty.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.saspxprogclub.pixelparty/com.saspxprogclub.pixelparty.AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.

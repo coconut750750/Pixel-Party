@@ -1,10 +1,10 @@
-package com.progclub.pixelparty;
+package com.saspxprogclub.pixelparty;
 
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.progclub.pixelparty.PixelPartyGame;
+import com.saspxprogclub.pixelparty.PixelPartyGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override

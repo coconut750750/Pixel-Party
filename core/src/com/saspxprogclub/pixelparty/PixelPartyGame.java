@@ -1,4 +1,4 @@
-package com.progclub.pixelparty;
+package com.saspxprogclub.pixelparty;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;

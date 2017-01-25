@@ -1,4 +1,4 @@
-package com.progclub.pixelparty;
+package com.saspxprogclub.pixelparty;
 
 /**
  * Created by Brandon on 1/25/17.
