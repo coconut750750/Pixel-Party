@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.saspxprogclub.pixelparty.BluetoothManager;
 
 public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
@@ -23,9 +24,10 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int laneInterval;
 	private int numLanes;
 	private int verticalBuffer;
+	private BluetoothManager bluetoothManager;
 
-	public PixelPartyGame(int i){
-
+	public PixelPartyGame(BluetoothManager bluetoothManager){
+		this.bluetoothManager = bluetoothManager;
 	}
 
 	
