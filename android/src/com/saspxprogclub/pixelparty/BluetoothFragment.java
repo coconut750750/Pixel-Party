@@ -178,7 +178,7 @@ public class BluetoothFragment extends Fragment {
         progressDialog.dismiss();
         Intent intent = new Intent(getView().getContext(), AndroidLauncher.class);
         //intent.putExtra(MainActivity.GAME_TYPE, MainActivity.DOUBLE_PLAYER);
-        //intent.putExtra(MainActivity.PLAYER_NUM, player);
+        intent.putExtra(AndroidLauncher.PLAYER_NUM, player);
         startActivity(intent);
     }
 

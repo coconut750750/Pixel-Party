@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,9 +22,11 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int numLanes;
 	private int verticalBuffer;
 	private BluetoothManager bluetoothManager;
+	private Color color;
 
-	public PixelPartyGame(BluetoothManager bluetoothManager){
+	public PixelPartyGame(BluetoothManager bluetoothManager, Color color){
 		this.bluetoothManager = bluetoothManager;
+		this.color = color;
 	}
 
 	
@@ -76,18 +79,26 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			m.integrate(dt);
 			m.updateBounds();
 
-			if(m.bottom() >= fieldBot){
+			if(m.bottom() <= field.height && m.top() >= verticalBuffer+m.getHeight()){
 				tempMinions.add(m);
 			}
 		}
 		minions = tempMinions;
 
 		List<String> messages = bluetoothManager.receive();
-		String total = "";
+		//String total = "";
 		for (String s : messages){
-			total += s+" ";
+			//total += s+" ";
+
+			int lane = Integer.parseInt(s);
+			int midLane = (int)((lane+0.5)*laneInterval);
+			Minion m = new Minion(midLane, (int)(field.height-verticalBuffer-50), 50, 50);
+			m.setVelocity(0, -1*field.height/10);
+			minions.add(m);
 		}
-		Gdx.app.debug("bluetooth recieved", ""+total);
+		//Gdx.app.debug("bluetooth recieved", ""+total);
+
+
 	}
 
 	public void draw(){
@@ -95,15 +106,16 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(color);
 		for (Minion m : minions) {
 			shapeRenderer.rect(m.getX()-m.getWidth()/2,m.getY()-m.getHeight()/2,m.getWidth(), m.getHeight());
 		}
 
-		drawLanes(numLanes);
+		drawLanes();
 		shapeRenderer.end();
 	}
 
-	public void drawLanes(int num){
+	public void drawLanes(){
 		int width = (int)(fieldRight/100);
 		for (int i = laneInterval; i <= fieldRight-laneInterval; i+=laneInterval){
 			shapeRenderer.rect(i-width,verticalBuffer,width, fieldTop);
@@ -135,14 +147,15 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		//(0,0) is top left, not bot left
-		Gdx.app.debug("adfasdfasdf", ""+x);
-		float lane = x/laneInterval;
+		//(0,0) is top left wen drawn
+
+		int lane = x/laneInterval;
 		int midLane = (int)((lane+0.5)*laneInterval);
 		Minion m = new Minion(midLane, verticalBuffer+50, 50, 50);
 		m.setVelocity(0, field.height/10);
 		minions.add(m);
 
-		bluetoothManager.send(""+x);
+		bluetoothManager.send(""+lane+"~");
 
 		return true;
 	}

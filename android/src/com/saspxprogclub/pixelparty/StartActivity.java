@@ -23,13 +23,13 @@ public class StartActivity extends AppCompatActivity {
         singlePlayer = (Button)findViewById(R.id.buttonSingle);
         doublePlayer = (Button)findViewById(R.id.buttonDouble);
 
-        singlePlayer.setOnClickListener(new View.OnClickListener() {
+        /*singlePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AndroidLauncher.class);
                 view.getContext().startActivity(intent);
             }
-        });
+        });*/
 
         doublePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
