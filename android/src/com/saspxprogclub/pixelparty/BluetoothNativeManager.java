@@ -53,7 +53,6 @@ public class BluetoothNativeManager implements com.saspxprogclub.pixelparty.Blue
                             }
                             message = message + new String(buffer, 0, bytesRead -1);
                             messages.add(message);
-                            Log.d("asdf",message);
 
                             socket.getInputStream();
                         }
@@ -67,8 +66,11 @@ public class BluetoothNativeManager implements com.saspxprogclub.pixelparty.Blue
 
     @Override
     public List<String> receive() {
-        List<String> temp = messages;
-        //messages.clear();
+        List<String> temp = new ArrayList<>();
+        for (String s : messages){
+            temp.add(s);
+        }
+        messages.clear();
         return temp;
     }
 }

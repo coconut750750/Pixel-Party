@@ -85,7 +85,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		List<String> messages = bluetoothManager.receive();
 		String total = "";
 		for (String s : messages){
-			total += s;
+			total += s+" ";
 		}
 		Gdx.app.debug("bluetooth recieved", ""+total);
 	}
