@@ -82,7 +82,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 		minions = tempMinions;
 
-		bluetoothManager.send("");
 		List<String> messages = bluetoothManager.receive();
 		String total = "";
 		for (String s : messages){
