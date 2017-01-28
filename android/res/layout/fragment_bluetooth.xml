@@ -1,0 +1,64 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.saspxprogclub.pixelparty.BluetoothFragment"
+    android:background="@color/darkWhite"
+    android:padding="16dp">
+
+    <ListView
+        android:id="@+id/list_discovered"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/buttons"
+        android:textColor="@color/lightBlack"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:weightSum="1.2"
+        android:id="@+id/buttons">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/button_listen"
+                android:text="Host a Game"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/lightBlack"
+                android:background="@drawable/button"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/button_search"
+                android:text="Search for a Game"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/lightBlack"
+                android:background="@drawable/button"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/button_menu"
+                android:text="Main Menu"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/lightBlack"
+                android:background="@drawable/button"
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

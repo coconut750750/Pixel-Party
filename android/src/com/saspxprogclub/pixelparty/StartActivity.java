@@ -9,18 +9,25 @@ import android.widget.Button;
 
 public class StartActivity extends Activity {
 
+    Button singlePlayer;
+    Button doublePlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        Button button = (Button)findViewById(R.id.buttonSingle);
-        button.setOnClickListener(new View.OnClickListener() {
+        singlePlayer = (Button)findViewById(R.id.buttonSingle);
+        doublePlayer = (Button)findViewById(R.id.buttonDouble);
+
+        singlePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AndroidLauncher.class);
                 view.getContext().startActivity(intent);
             }
         });
+
+
     }
 }
