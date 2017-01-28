@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.saspxprogclub.pixelparty.BluetoothManager;
 
 public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
@@ -83,6 +82,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 		}
 		minions = tempMinions;
+
+		Gdx.app.debug("bluetooth recieved", ""+bluetoothManager.receive());
 	}
 
 	public void draw(){
@@ -136,6 +137,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		Minion m = new Minion(midLane, verticalBuffer+50, 50, 50);
 		m.setVelocity(0, field.height/10);
 		minions.add(m);
+
+		bluetoothManager.send(""+x);
+
 
 		return true;
 	}

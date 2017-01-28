@@ -19,7 +19,8 @@ public class BluetoothNativeManager implements com.saspxprogclub.pixelparty.Blue
     }
 
     @Override
-    public void send(byte[] byteString) {
+    public void send(String msg) {
+        byte[] byteString = (msg).getBytes();
         OutputStream outStream;
         try {
             outStream = socket.getOutputStream();

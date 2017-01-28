@@ -5,6 +5,6 @@ package com.saspxprogclub.pixelparty;
  */
 
 public interface BluetoothManager {
-    public void send(byte[] byteString);
-    public String receive();
+    void send(String msg);
+    String receive();
 }
