@@ -24,6 +24,10 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int numLanes;
 	private int verticalBuffer;
 
+	public PixelPartyGame(int i){
+
+	}
+
 	
 	@Override
 	public void create () {
