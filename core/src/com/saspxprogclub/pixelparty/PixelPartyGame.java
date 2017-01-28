@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,20 +91,24 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		for (String s : messages){
 			//total += s+" ";
 
-			int lane = Integer.parseInt(s);
-			int midLane = (int)((lane+0.5)*laneInterval);
-			Color c;
-			if (color == Color.BLUE){
-				c = Color.RED;
-			} else {
-				c = Color.BLUE;
+			try{
+				int lane = Integer.parseInt(s);
+				int midLane = (int)((lane+0.5)*laneInterval);
+				Color c;
+				if (color == Color.BLUE){
+					c = Color.RED;
+				} else {
+					c = Color.BLUE;
+				}
+				Minion m = new Minion(midLane, (int)(field.height-verticalBuffer), 50, 50, c);
+				m.setVelocity(0, -1*field.height/10);
+				minions.add(m);
+			} catch (NumberFormatException e){
+				Gdx.app.exit();
 			}
-			Minion m = new Minion(midLane, (int)(field.height-verticalBuffer), 50, 50, c);
-			m.setVelocity(0, -1*field.height/10);
-			minions.add(m);
+
 		}
 		//Gdx.app.debug("bluetooth recieved", ""+total);
-
 
 	}
 
@@ -112,6 +117,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(Color.WHITE);
 		drawLanes();
 		for (Minion m : minions) {
 			shapeRenderer.setColor(m.getColor());

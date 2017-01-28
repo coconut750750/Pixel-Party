@@ -58,7 +58,7 @@ public class BluetoothNativeManager implements com.saspxprogclub.pixelparty.Blue
                         }
                     }
                 } catch (IOException e) {
-                    Log.d("BLUETOOTH_COMMS", e.getMessage());
+                    messages.add("xx");
                 }
             }
         };
