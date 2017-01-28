@@ -92,7 +92,13 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 			int lane = Integer.parseInt(s);
 			int midLane = (int)((lane+0.5)*laneInterval);
-			Minion m = new Minion(midLane, (int)(field.height-verticalBuffer-50), 50, 50);
+			Color c;
+			if (color == Color.BLUE){
+				c = Color.RED;
+			} else {
+				c = Color.BLUE;
+			}
+			Minion m = new Minion(midLane, (int)(field.height-verticalBuffer), 50, 50, c);
 			m.setVelocity(0, -1*field.height/10);
 			minions.add(m);
 		}
@@ -106,12 +112,11 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(color);
+		drawLanes();
 		for (Minion m : minions) {
+			shapeRenderer.setColor(m.getColor());
 			shapeRenderer.rect(m.getX()-m.getWidth()/2,m.getY()-m.getHeight()/2,m.getWidth(), m.getHeight());
 		}
-
-		drawLanes();
 		shapeRenderer.end();
 	}
 
@@ -151,7 +156,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		int lane = x/laneInterval;
 		int midLane = (int)((lane+0.5)*laneInterval);
-		Minion m = new Minion(midLane, verticalBuffer+50, 50, 50);
+		Minion m = new Minion(midLane, verticalBuffer+50, 50, 50, color);
 		m.setVelocity(0, field.height/10);
 		minions.add(m);
 
