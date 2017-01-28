@@ -37,15 +37,15 @@ public class BluetoothNativeManager implements com.saspxprogclub.pixelparty.Blue
         try {
             InputStream instream = socket.getInputStream();
             int bytesRead;
-            message = "";
             bytesRead = instream.read(buffer);
             if (bytesRead != -1) {
                 while ((bytesRead==bufferSize)&&(buffer[bufferSize-1] != 0)) {
                     message = message + new String(buffer, 0, bytesRead);
                     bytesRead = instream.read(buffer);
+                    Log.d("reading","bluetooth");
                 }
                 message = message + new String(buffer, 0, bytesRead -1);
-                socket.getInputStream();
+                //socket.getInputStream();
             }
         } catch (IOException e) {
             Log.d("BLUETOOTH_COMMS", e.getMessage());
