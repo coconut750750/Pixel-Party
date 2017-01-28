@@ -5,6 +5,8 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Brandon on 1/28/17.
@@ -13,9 +15,11 @@ import java.io.OutputStream;
 public class BluetoothNativeManager implements com.saspxprogclub.pixelparty.BluetoothManager{
 
     BluetoothSocket socket;
+    List<String> messages;
 
     public BluetoothNativeManager(BluetoothSocket bluetoothSocket){
         this.socket = bluetoothSocket;
+        messages = new ArrayList<>();
     }
 
     @Override
@@ -30,26 +34,40 @@ public class BluetoothNativeManager implements com.saspxprogclub.pixelparty.Blue
     }
 
     @Override
-    public String receive() {
-        String message = "";
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-        try {
-            InputStream instream = socket.getInputStream();
-            int bytesRead;
-            bytesRead = instream.read(buffer);
-            if (bytesRead != -1) {
-                while ((bytesRead==bufferSize)&&(buffer[bufferSize-1] != 0)) {
-                    message = message + new String(buffer, 0, bytesRead);
-                    bytesRead = instream.read(buffer);
-                    Log.d("reading","bluetooth");
+    public Runnable getListener() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                int bufferSize = 1024;
+                byte[] buffer = new byte[bufferSize];
+                try {
+                    InputStream instream = socket.getInputStream();
+                    int bytesRead;
+                    while (true) {
+                        String message = "";
+                        bytesRead = instream.read(buffer);
+                        if (bytesRead != -1) {
+                            while ((bytesRead==bufferSize)&&(buffer[bufferSize-1] != 0)) {
+                                message = message + new String(buffer, 0, bytesRead);
+                                bytesRead = instream.read(buffer);
+                            }
+                            message = message + new String(buffer, 0, bytesRead -1);
+                            messages.add(message);
+
+                            socket.getInputStream();
+                        }
+                    }
+                } catch (IOException e) {
+                    Log.d("BLUETOOTH_COMMS", e.getMessage());
                 }
-                message = message + new String(buffer, 0, bytesRead -1);
-                //socket.getInputStream();
             }
-        } catch (IOException e) {
-            Log.d("BLUETOOTH_COMMS", e.getMessage());
-        }
-        return message;
+        };
+    }
+
+    @Override
+    public List<String> receive() {
+        List<String> temp = messages;
+        messages = null;
+        return temp;
     }
 }

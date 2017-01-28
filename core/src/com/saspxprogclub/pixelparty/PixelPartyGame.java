@@ -30,7 +30,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	@Override
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		Gdx.app.debug("BUTTON", "playButton Pressed");
 		field.set(0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		fieldLeft = field.x;
 		fieldRight = field.x+field.width;
@@ -48,6 +47,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		Gdx.input.setInputProcessor(this);
 
+		Runnable bluetoothRun = bluetoothManager.getListener();
+		Thread messageListener = new Thread(bluetoothRun);
+		messageListener.start();
 	}
 
 	@Override
@@ -80,7 +82,13 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 		minions = tempMinions;
 
-		Gdx.app.debug("bluetooth recieved", ""+bluetoothManager.receive());
+		bluetoothManager.send("");
+		List<String> messages = bluetoothManager.receive();
+		String total = "";
+		for (String s : messages){
+			total += s;
+		}
+		Gdx.app.debug("bluetooth recieved", ""+total);
 	}
 
 	public void draw(){
@@ -136,7 +144,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		minions.add(m);
 
 		bluetoothManager.send(""+x);
-
 
 		return true;
 	}
