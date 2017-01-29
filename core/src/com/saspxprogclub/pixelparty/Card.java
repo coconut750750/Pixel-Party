@@ -53,7 +53,7 @@ public class Card {
         return bounds;
     }
 
-    private int getPos(){
+    public int getPos(){
         return pos;
     }
 

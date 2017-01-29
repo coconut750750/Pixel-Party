@@ -27,7 +27,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int cardBoardMargin;
 	private int cardBorderWidth;
 	private int cardSelected;
-	private int numCards;
+	private int totalNumCards;
+	private int currentNumCards;
 	private int cardMargin;
 	private BluetoothManager bluetoothManager;
 	private Color color;
@@ -77,14 +78,15 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	public void initCards(){
 		cardBoardWidth = (int)(fieldRight/4*3);
-		numCards = 4;
+		totalNumCards = 4;
+		currentNumCards = 4;
 		cardBoardMargin =(int)((fieldRight-cardBoardWidth)/2);
 		cardMargin = cardBoardWidth/60;
 		cardSelected = -1;
 
 		cards = new ArrayList<Card>();
-		cardNums = new boolean[numCards];
-		int cardWidth = (cardBoardWidth-cardMargin*(numCards+1))/4;
+		cardNums = new boolean[totalNumCards];
+		int cardWidth = (cardBoardWidth-cardMargin*(totalNumCards+1))/4;
 		cardBorderWidth = cardWidth/60;
 		Card.initCards(cardWidth,verticalBuffer-2*cardMargin, cardBoardMargin, cardMargin, cardBorderWidth);
 
@@ -126,14 +128,17 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 		minions = tempMinions;
 
-		if (cards.size() == numCards){
+		if (currentNumCards == totalNumCards){
 			currentRegen = cardRegen;
 		} else {
 			currentRegen -= dt;
 			if (currentRegen <= 0){
-				for (int i = 0; i < numCards; i++){
+				Gdx.app.log("asdf",""+cards.size());
+				for (int i = 0; i < totalNumCards; i++){
+					Gdx.app.log("asdf",""+i+" "+cardNums[i]);
 					if (!cardNums[i]){
-						cards.add(new Card(i, Color.RED));
+						cards.set(i, new Card(i, Color.RED));
+						currentNumCards += 1;
 						currentRegen = cardRegen;
 						cardNums[i] = true;
 						break;
@@ -141,6 +146,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				}
 			}
 		}
+
 
 		if (!isSingle) {
 			List<String> messages = bluetoothManager.receive();
@@ -179,6 +185,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			shapeRenderer.rect(m.getX()-m.getWidth()/2,m.getY()-m.getHeight()/2,m.getWidth(), m.getHeight());
 		}
 		for(Card c : cards){
+			if(c == null){
+				continue;
+			}
 			//draw border
 			shapeRenderer.setColor(c.getBorderColor());
 			shapeRenderer.rect(c.getX(), c.getY(), Card.width, Card.height);
@@ -229,16 +238,21 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		//Gdx.app.log("touched",""+x);
 		y = (int)(field.height - y);
 
-		for (Card c : cards){
+		for (int i = 0; i < cards.size(); i++){
+			Card c = cards.get(i);
+			if(c == null){
+				continue;
+			}
 			if (c.getBounds().contains(x, y)){
 				if(c.isSelected()){
 					c.setSelected(false);
-
 					cardSelected = -1;
 				} else {
 					c.setSelected(true);
 
-					cardSelected = cards.indexOf(c);
+					cardSelected = c.getPos();
+					Gdx.app.log("asdf",""+cardSelected);
+
 				}
 
 				break;
@@ -262,7 +276,11 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				minions.add(m);
 
 				cards.remove(cardSelected);
+				cards.add(cardSelected, null);
+				currentNumCards -= 1;
 				cardNums[cardSelected] = false;
+				Gdx.app.log("asdf",""+cardSelected);
+				cardSelected = -1;
 
 				if (!isSingle){
 					bluetoothManager.send(""+lane+"~");
