@@ -133,9 +133,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		} else {
 			currentRegen -= dt;
 			if (currentRegen <= 0){
-				Gdx.app.log("asdf",""+cards.size());
 				for (int i = 0; i < totalNumCards; i++){
-					Gdx.app.log("asdf",""+i+" "+cardNums[i]);
 					if (!cardNums[i]){
 						cards.set(i, new Card(i, Color.RED));
 						currentNumCards += 1;
@@ -249,10 +247,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					cardSelected = -1;
 				} else {
 					c.setSelected(true);
-
 					cardSelected = c.getPos();
-					Gdx.app.log("asdf",""+cardSelected);
-
 				}
 
 				break;
@@ -279,7 +274,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				cards.add(cardSelected, null);
 				currentNumCards -= 1;
 				cardNums[cardSelected] = false;
-				Gdx.app.log("asdf",""+cardSelected);
 				cardSelected = -1;
 
 				if (!isSingle){
