@@ -1,7 +1,3 @@
 Pixel Party
 
-<<<<<<< HEAD
-SAS PX Prog. Club 2017
-=======
-SAS PX ‘17
->>>>>>> master
+SAS PX Prog. Club 2016-2017
