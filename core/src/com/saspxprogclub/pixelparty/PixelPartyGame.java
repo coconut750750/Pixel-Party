@@ -35,7 +35,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			this.color = color;
 		}
 	}
-
 	
 	@Override
 	public void create () {
@@ -66,7 +65,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	@Override
 	public void resize(int width, int height) {
-
 	}
 
 	@Override
@@ -112,11 +110,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				} catch (NumberFormatException e){
 					Gdx.app.exit();
 				}
-
 			}
 			//Gdx.app.debug("bluetooth recieved", ""+total);
 		}
-
 	}
 
 	public void draw(){
@@ -126,6 +122,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);
 		drawLanes();
+		drawCardBoard();
 		for (Minion m : minions) {
 			shapeRenderer.setColor(m.getColor());
 			shapeRenderer.rect(m.getX()-m.getWidth()/2,m.getY()-m.getHeight()/2,m.getWidth(), m.getHeight());
@@ -139,12 +136,17 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			shapeRenderer.rect(i-width,verticalBuffer,width, fieldTop);
 		}
 		shapeRenderer.rect(0,verticalBuffer,fieldRight, width);
+	}
 
+	public void drawCardBoard(){
+		int width = (int)(fieldRight/3*2);
+		int margin = (int)(fieldRight/6);
+		
+		shapeRenderer.rect(margin, verticalBuffer, width, verticalBuffer);
 	}
 
 	@Override
 	public void dispose () {
-
 	}
 
 	@Override
@@ -165,7 +167,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		//(0,0) is top left, not bot left
-		//(0,0) is top left wen drawn
+		//(0,0) is top left when drawn
 
 		int lane = x/laneInterval;
 		int midLane = (int)((lane+0.5)*laneInterval);

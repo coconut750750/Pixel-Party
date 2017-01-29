@@ -3,7 +3,7 @@ package com.saspxprogclub.pixelparty;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 
-/**
+/***
  * Created by Brandon on 1/29/17.
  */
 
@@ -23,7 +23,6 @@ public class Card {
         this.x = x;
         this.y = y;
         this.color = color;
-
         bounds.setWidth(width);
         bounds.setHeight(height);
     }
