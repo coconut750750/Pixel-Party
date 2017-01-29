@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -18,9 +19,12 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private float fieldTop, fieldBot, fieldLeft, fieldRight;
 	private List<Minion> minions;
+	private List<Card> cards;
 	private int laneInterval;
 	private int numLanes;
 	private int verticalBuffer;
+	private int cardBoardWidth;
+	private int cardBoardMargin;
 	private BluetoothManager bluetoothManager;
 	private Color color;
 	private boolean isSingle;
@@ -47,9 +51,18 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		fieldTop = field.y+field.height;
 
 		verticalBuffer = (int)((double)field.height/10.0);
+		cardBoardWidth = (int)(fieldRight/4*3);
+		cardBoardMargin =(int)((fieldRight-cardBoardWidth)/2);
+
 		shapeRenderer = new ShapeRenderer();
 
 		minions = new ArrayList<Minion>();
+		cards = new ArrayList<Card>();
+		Card.initCards(cardBoardWidth/4,verticalBuffer, 10, cardBoardMargin);
+
+		for (int i = 0; i < 4; i++){
+			cards.add(new Card(i, Color.RED));
+		}
 
 		numLanes = 4;
 		laneInterval = (int)(fieldRight/numLanes);
@@ -91,6 +104,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 		}
 		minions = tempMinions;
+
+
 
 		if (!isSingle) {
 			List<String> messages = bluetoothManager.receive();
@@ -139,10 +154,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	}
 
 	public void drawCardBoard(){
-		int width = (int)(fieldRight/3*2);
-		int margin = (int)(fieldRight/6);
-		
-		shapeRenderer.rect(margin, verticalBuffer, width, verticalBuffer);
+		shapeRenderer.rect(cardBoardMargin, 0, cardBoardWidth, verticalBuffer);
 	}
 
 	@Override
