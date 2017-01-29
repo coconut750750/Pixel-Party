@@ -14,6 +14,9 @@ import java.util.List;
 
 public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
+	private int mheight;
+	private int mwidth;
+
 	private Rectangle field = new Rectangle();
 	private ShapeRenderer shapeRenderer;
 	private float fieldTop, fieldBot, fieldLeft, fieldRight;
@@ -51,6 +54,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		field.set(0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		mheight = (int)(field.height/30.0);
+		mwidth = mheight;
+
 		fieldLeft = field.x;
 		fieldRight = field.x+field.width;
 
@@ -128,7 +134,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			m.integrate(dt);
 			m.updateBounds();
 
-			if(m.bottom() <= field.height && m.top() >= verticalBuffer+m.getHeight()){
+			if(m.top() <= field.height && m.bottom() >= verticalBuffer+m.getHeight()){
 				tempMinions.add(m);
 			}
 		}
@@ -162,7 +168,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					} else {
 						c = Color.BLUE;
 					}
-					Minion m = new Minion(midLane, (int)(field.height-verticalBuffer), 50, 50, c, false);
+					Minion m = new Minion(midLane, (int)(field.height-mheight), mwidth, mheight, c, false);
 					minions.add(m);
 				} catch (NumberFormatException e){
 					Gdx.app.exit();
@@ -269,7 +275,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			if (y >= verticalBuffer){
 				int lane = x/laneInterval;
 				int midLane = (int)((lane+0.5)*laneInterval);
-				Minion m = new Minion(midLane, verticalBuffer+50, 50, 50, color, true);
+				Minion m = new Minion(midLane, verticalBuffer+mheight, mwidth, mheight, color, true);
 				minions.add(m);
 
 				cards.remove(cardSelected);
