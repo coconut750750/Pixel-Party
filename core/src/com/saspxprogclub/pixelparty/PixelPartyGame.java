@@ -19,7 +19,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private float fieldTop, fieldBot, fieldLeft, fieldRight;
 	private List<Minion> minions;
 	private List<Card> cards;
-	private boolean[] cardNums;
+	private List<Integer> cardsNeeded;
 	private int laneInterval;
 	private int numLanes;
 	private int verticalBuffer;
@@ -27,14 +27,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int cardBoardMargin;
 	private int cardBorderWidth;
 	private int cardSelected;
-	private int totalNumCards;
+	final static private int totalNumCards = 4;
 	private int currentNumCards;
 	private int cardMargin;
 	private BluetoothManager bluetoothManager;
 	private Color color;
 	private boolean isSingle;
-	private int cardRegen;
-	private int currentRegen;
+	final static private float cardRegen = 2;
+	private float currentRegen;
 
 	public PixelPartyGame(BluetoothManager bluetoothManager, Color color){
 		this.isSingle = color == Color.BLACK;
@@ -78,25 +78,22 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	public void initCards(){
 		cardBoardWidth = (int)(fieldRight/4*3);
-		totalNumCards = 4;
 		currentNumCards = 4;
 		cardBoardMargin =(int)((fieldRight-cardBoardWidth)/2);
 		cardMargin = cardBoardWidth/60;
 		cardSelected = -1;
 
 		cards = new ArrayList<Card>();
-		cardNums = new boolean[totalNumCards];
+		cardsNeeded = new ArrayList<Integer>();
 		int cardWidth = (cardBoardWidth-cardMargin*(totalNumCards+1))/4;
 		cardBorderWidth = cardWidth/60;
 		Card.initCards(cardWidth,verticalBuffer-2*cardMargin, cardBoardMargin, cardMargin, cardBorderWidth);
 
 		for (int i = 0; i < 4; i++){
 			cards.add(new Card(i, Color.RED));
-			cardNums[i] = true;
 		}
 
-		cardRegen = 200;
-		currentRegen = 200;
+		currentRegen = cardRegen;
 	}
 
 	@Override
@@ -119,6 +116,15 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	public void update(float dt){
 		List<Minion> tempMinions = new ArrayList<Minion>();
 		for(Minion m : minions){
+			if (m.getDelay() <= 0){
+				if(m.isOwned()){
+					m.setVelocity(0, field.height/10);
+				} else {
+					m.setVelocity(0, -1*field.height/10);
+				}
+			} else {
+				m.subtractDelay(dt);
+			}
 			m.integrate(dt);
 			m.updateBounds();
 
@@ -128,23 +134,21 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 		minions = tempMinions;
 
-		if (currentNumCards == totalNumCards){
+		Gdx.app.log("dt",""+currentRegen);
+
+		if (cardsNeeded.size() == 0){
 			currentRegen = cardRegen;
 		} else {
 			currentRegen -= dt;
 			if (currentRegen <= 0){
-				for (int i = 0; i < totalNumCards; i++){
-					if (!cardNums[i]){
-						cards.set(i, new Card(i, Color.RED));
-						currentNumCards += 1;
-						currentRegen = cardRegen;
-						cardNums[i] = true;
-						break;
-					}
-				}
+				int i = cardsNeeded.get(0);
+				cardsNeeded.remove(0);
+				cards.set(i, new Card(i, Color.RED));
+				currentNumCards += 1;
+				currentRegen = cardRegen;
+
 			}
 		}
-
 
 		if (!isSingle) {
 			List<String> messages = bluetoothManager.receive();
@@ -158,8 +162,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					} else {
 						c = Color.BLUE;
 					}
-					Minion m = new Minion(midLane, (int)(field.height-verticalBuffer), 50, 50, c);
-					m.setVelocity(0, -1*field.height/10);
+					Minion m = new Minion(midLane, (int)(field.height-verticalBuffer), 50, 50, c, false);
 					minions.add(m);
 				} catch (NumberFormatException e){
 					Gdx.app.exit();
@@ -266,14 +269,13 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			if (y >= verticalBuffer){
 				int lane = x/laneInterval;
 				int midLane = (int)((lane+0.5)*laneInterval);
-				Minion m = new Minion(midLane, verticalBuffer+50, 50, 50, color);
-				m.setVelocity(0, field.height/10);
+				Minion m = new Minion(midLane, verticalBuffer+50, 50, 50, color, true);
 				minions.add(m);
 
 				cards.remove(cardSelected);
 				cards.add(cardSelected, null);
 				currentNumCards -= 1;
-				cardNums[cardSelected] = false;
+				cardsNeeded.add(cardSelected);
 				cardSelected = -1;
 
 				if (!isSingle){
