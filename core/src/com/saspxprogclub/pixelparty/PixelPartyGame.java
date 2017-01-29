@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -20,6 +19,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private float fieldTop, fieldBot, fieldLeft, fieldRight;
 	private List<Minion> minions;
 	private List<Card> cards;
+	private boolean[] cardNums;
 	private int laneInterval;
 	private int numLanes;
 	private int verticalBuffer;
@@ -32,6 +32,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private BluetoothManager bluetoothManager;
 	private Color color;
 	private boolean isSingle;
+	private int cardRegen;
+	private int currentRegen;
 
 	public PixelPartyGame(BluetoothManager bluetoothManager, Color color){
 		this.isSingle = color == Color.BLACK;
@@ -81,13 +83,18 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardSelected = -1;
 
 		cards = new ArrayList<Card>();
+		cardNums = new boolean[numCards];
 		int cardWidth = (cardBoardWidth-cardMargin*(numCards+1))/4;
 		cardBorderWidth = cardWidth/60;
 		Card.initCards(cardWidth,verticalBuffer-2*cardMargin, cardBoardMargin, cardMargin, cardBorderWidth);
 
 		for (int i = 0; i < 4; i++){
 			cards.add(new Card(i, Color.RED));
+			cardNums[i] = true;
 		}
+
+		cardRegen = 200;
+		currentRegen = 200;
 	}
 
 	@Override
@@ -119,7 +126,21 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 		minions = tempMinions;
 
-
+		if (cards.size() == numCards){
+			currentRegen = cardRegen;
+		} else {
+			currentRegen -= dt;
+			if (currentRegen <= 0){
+				for (int i = 0; i < numCards; i++){
+					if (!cardNums[i]){
+						cards.add(new Card(0, Color.RED));
+						currentRegen = cardRegen;
+						cardNums[i] = true;
+						break;
+					}
+				}
+			}
+		}
 
 		if (!isSingle) {
 			List<String> messages = bluetoothManager.receive();
@@ -205,11 +226,10 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		//(0,0) is top left, not bot left
 		//(0,0) is top left when drawn
 
-		Gdx.app.log("touched",""+x);
+		//Gdx.app.log("touched",""+x);
 		y = (int)(field.height - y);
 
 		for (Card c : cards){
-			Gdx.app.log("card",""+c.getBounds().contains(x,y));
 			if (c.getBounds().contains(x, y)){
 				if(c.isSelected()){
 					c.setSelected(false);
@@ -242,6 +262,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				minions.add(m);
 
 				cards.remove(cardSelected);
+				cardNums[cardSelected] = false;
 
 				if (!isSingle){
 					bluetoothManager.send(""+lane+"~");
