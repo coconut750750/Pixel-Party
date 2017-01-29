@@ -133,7 +133,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			if (currentRegen <= 0){
 				for (int i = 0; i < numCards; i++){
 					if (!cardNums[i]){
-						cards.add(new Card(0, Color.RED));
+						cards.add(new Card(i, Color.RED));
 						currentRegen = cardRegen;
 						cardNums[i] = true;
 						break;
