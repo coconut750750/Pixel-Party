@@ -225,24 +225,31 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 		}
 
-		/*int lane = x/laneInterval;
-		int midLane = (int)((lane+0.5)*laneInterval);
-		Minion m = new Minion(midLane, verticalBuffer+50, 50, 50, color);
-		m.setVelocity(0, field.height/10);
-		minions.add(m);
-
-		if (!isSingle){
-			bluetoothManager.send(""+lane+"~");
-		}*/
-
 		return true;
 	}
 
 	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+	public boolean touchUp(int x, int y, int pointer, int button) {
+		y = (int)(field.height-y);
+
 		if (cardSelected != -1){
 			Card c = cards.get(cardSelected);
-			c.setSelected(false);
+			if (y >= verticalBuffer){
+				int lane = x/laneInterval;
+				int midLane = (int)((lane+0.5)*laneInterval);
+				Minion m = new Minion(midLane, verticalBuffer+50, 50, 50, color);
+				m.setVelocity(0, field.height/10);
+				minions.add(m);
+
+				cards.remove(cardSelected);
+
+				if (!isSingle){
+					bluetoothManager.send(""+lane+"~");
+				}
+			} else {
+				c.setSelected(false);
+			}
+
 		}
 
 		return true;
