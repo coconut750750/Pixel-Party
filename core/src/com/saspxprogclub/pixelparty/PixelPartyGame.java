@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +23,17 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int verticalBuffer;
 	private BluetoothManager bluetoothManager;
 	private Color color;
+	private boolean isSingle;
 
 	public PixelPartyGame(BluetoothManager bluetoothManager, Color color){
-		this.bluetoothManager = bluetoothManager;
-		this.color = color;
+		this.isSingle = color == Color.BLACK;
+		if (this.isSingle){
+			this.bluetoothManager = null;
+			this.color = Color.WHITE;
+		} else {
+			this.bluetoothManager = bluetoothManager;
+			this.color = color;
+		}
 	}
 
 	
@@ -51,9 +57,11 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		Gdx.input.setInputProcessor(this);
 
-		Runnable bluetoothRun = bluetoothManager.getListener();
-		Thread messageListener = new Thread(bluetoothRun);
-		messageListener.start();
+		if (!isSingle){
+			Runnable bluetoothRun = bluetoothManager.getListener();
+			Thread messageListener = new Thread(bluetoothRun);
+			messageListener.start();
+		}
 	}
 
 	@Override
@@ -86,29 +94,28 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 		minions = tempMinions;
 
-		List<String> messages = bluetoothManager.receive();
-		//String total = "";
-		for (String s : messages){
-			//total += s+" ";
-
-			try{
-				int lane = Integer.parseInt(s);
-				int midLane = (int)((lane+0.5)*laneInterval);
-				Color c;
-				if (color == Color.BLUE){
-					c = Color.RED;
-				} else {
-					c = Color.BLUE;
+		if (!isSingle) {
+			List<String> messages = bluetoothManager.receive();
+			for (String s : messages){
+				try{
+					int lane = Integer.parseInt(s);
+					int midLane = (int)((lane+0.5)*laneInterval);
+					Color c;
+					if (color == Color.BLUE){
+						c = Color.RED;
+					} else {
+						c = Color.BLUE;
+					}
+					Minion m = new Minion(midLane, (int)(field.height-verticalBuffer), 50, 50, c);
+					m.setVelocity(0, -1*field.height/10);
+					minions.add(m);
+				} catch (NumberFormatException e){
+					Gdx.app.exit();
 				}
-				Minion m = new Minion(midLane, (int)(field.height-verticalBuffer), 50, 50, c);
-				m.setVelocity(0, -1*field.height/10);
-				minions.add(m);
-			} catch (NumberFormatException e){
-				Gdx.app.exit();
-			}
 
+			}
+			//Gdx.app.debug("bluetooth recieved", ""+total);
 		}
-		//Gdx.app.debug("bluetooth recieved", ""+total);
 
 	}
 
@@ -166,7 +173,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		m.setVelocity(0, field.height/10);
 		minions.add(m);
 
-		bluetoothManager.send(""+lane+"~");
+		if (!isSingle){
+			bluetoothManager.send(""+lane+"~");
+		}
 
 		return true;
 	}

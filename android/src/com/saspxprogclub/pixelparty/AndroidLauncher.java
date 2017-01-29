@@ -23,15 +23,14 @@ public class AndroidLauncher extends AndroidApplication {
 		int playerNum = intent.getIntExtra(PLAYER_NUM,0);
 		if (playerNum == 1){
 			color = Color.BLUE;
-		} else {
+		} else if (playerNum == 2){
 			color = Color.RED;
+		} else{
+			color = Color.BLACK;
 		}
 
-
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-
 		bluetoothSocket = BluetoothFragment.socket;
-
 		initialize(new PixelPartyGame(new BluetoothNativeManager(bluetoothSocket), color), config);
 	}
 }
