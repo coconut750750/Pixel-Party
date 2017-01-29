@@ -25,6 +25,10 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int verticalBuffer;
 	private int cardBoardWidth;
 	private int cardBoardMargin;
+	private int cardBorderWidth;
+	private int cardSelected;
+	private int numCards;
+	private int cardMargin;
 	private BluetoothManager bluetoothManager;
 	private Color color;
 	private boolean isSingle;
@@ -50,19 +54,12 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		fieldBot = field.y;
 		fieldTop = field.y+field.height;
 
-		verticalBuffer = (int)((double)field.height/10.0);
-		cardBoardWidth = (int)(fieldRight/4*3);
-		cardBoardMargin =(int)((fieldRight-cardBoardWidth)/2);
+		verticalBuffer = (int)((double)field.height/7.0);
+		initCards();
 
 		shapeRenderer = new ShapeRenderer();
 
 		minions = new ArrayList<Minion>();
-		cards = new ArrayList<Card>();
-		Card.initCards(cardBoardWidth/4,verticalBuffer, 10, cardBoardMargin);
-
-		for (int i = 0; i < 4; i++){
-			cards.add(new Card(i, Color.RED));
-		}
 
 		numLanes = 4;
 		laneInterval = (int)(fieldRight/numLanes);
@@ -73,6 +70,23 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			Runnable bluetoothRun = bluetoothManager.getListener();
 			Thread messageListener = new Thread(bluetoothRun);
 			messageListener.start();
+		}
+	}
+
+	public void initCards(){
+		cardBoardWidth = (int)(fieldRight/4*3);
+		numCards = 4;
+		cardBoardMargin =(int)((fieldRight-cardBoardWidth)/2);
+		cardMargin = cardBoardWidth/60;
+		cardSelected = -1;
+
+		cards = new ArrayList<Card>();
+		int cardWidth = (cardBoardWidth-cardMargin*(numCards+1))/4;
+		cardBorderWidth = cardWidth/60;
+		Card.initCards(cardWidth,verticalBuffer-2*cardMargin, cardBoardMargin, cardMargin, cardBorderWidth);
+
+		for (int i = 0; i < 4; i++){
+			cards.add(new Card(i, Color.RED));
 		}
 	}
 
@@ -137,10 +151,20 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		shapeRenderer.setColor(Color.WHITE);
 		drawLanes();
+		shapeRenderer.setColor(Color.GREEN);
 		drawCardBoard();
 		for (Minion m : minions) {
 			shapeRenderer.setColor(m.getColor());
 			shapeRenderer.rect(m.getX()-m.getWidth()/2,m.getY()-m.getHeight()/2,m.getWidth(), m.getHeight());
+		}
+		for(Card c : cards){
+			//draw border
+			shapeRenderer.setColor(c.getBorderColor());
+			shapeRenderer.rect(c.getX(), c.getY(), Card.width, Card.height);
+			//draw card
+			int borderWidth = c.getBorderWidth();
+			shapeRenderer.setColor(c.getColor());
+			shapeRenderer.rect(c.getX()+borderWidth, c.getY()+borderWidth, Card.width-2*borderWidth, Card.height-2*borderWidth);
 		}
 		shapeRenderer.end();
 	}
@@ -181,7 +205,27 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		//(0,0) is top left, not bot left
 		//(0,0) is top left when drawn
 
-		int lane = x/laneInterval;
+		Gdx.app.log("touched",""+x);
+		y = (int)(field.height - y);
+
+		for (Card c : cards){
+			Gdx.app.log("card",""+c.getBounds().contains(x,y));
+			if (c.getBounds().contains(x, y)){
+				if(c.isSelected()){
+					c.setSelected(false);
+
+					cardSelected = -1;
+				} else {
+					c.setSelected(true);
+
+					cardSelected = cards.indexOf(c);
+				}
+
+				break;
+			}
+		}
+
+		/*int lane = x/laneInterval;
 		int midLane = (int)((lane+0.5)*laneInterval);
 		Minion m = new Minion(midLane, verticalBuffer+50, 50, 50, color);
 		m.setVelocity(0, field.height/10);
@@ -189,19 +233,29 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		if (!isSingle){
 			bluetoothManager.send(""+lane+"~");
-		}
+		}*/
 
 		return true;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
+		if (cardSelected != -1){
+			Card c = cards.get(cardSelected);
+			c.setSelected(false);
+		}
+
+		return true;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
+		if (cardSelected != -1){
+			Card c = cards.get(cardSelected);
+			c.move(screenX-Card.width/2, (int)(field.height-screenY)-Card.height/2);
+		}
+
+		return true;
 	}
 
 	@Override
