@@ -30,6 +30,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int cardBoardMargin;
 	private int cardBorderWidth;
 	private int cardSelected;
+	private boolean cardDragged;
 	final static private int totalNumCards = 4;
 	private int cardMargin;
 	private BluetoothManager bluetoothManager;
@@ -64,6 +65,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		verticalBuffer = (int)((double)field.height/7.0);
 		initCards();
+		initBluetooth();
 
 		shapeRenderer = new ShapeRenderer();
 
@@ -73,12 +75,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		laneInterval = (int)(fieldRight/numLanes);
 
 		Gdx.input.setInputProcessor(this);
-
-		if (!isSingle){
-			Runnable bluetoothRun = bluetoothManager.getListener();
-			Thread messageListener = new Thread(bluetoothRun);
-			messageListener.start();
-		}
 	}
 
 	private void initCards(){
@@ -86,6 +82,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardBoardMargin =(int)((fieldRight-cardBoardWidth)/2);
 		cardMargin = cardBoardWidth/60;
 		cardSelected = -1;
+		cardDragged = false;
 
 		cards = new ArrayList<Card>();
 		cardsNeeded = new ArrayList<Integer>();
@@ -98,6 +95,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 
 		currentRegen = cardRegen;
+	}
+
+	private void initBluetooth(){
+		if (!isSingle){
+			Runnable bluetoothRun = bluetoothManager.getListener();
+			Thread messageListener = new Thread(bluetoothRun);
+			messageListener.start();
+		}
 	}
 
 	@Override
@@ -138,8 +143,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 		minions = tempMinions;
 
-		Gdx.app.log("dt",""+currentRegen);
-
 		if (cardsNeeded.size() == 0){
 			currentRegen = cardRegen;
 		} else {
@@ -157,7 +160,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			List<String> messages = bluetoothManager.receive();
 			for (String s : messages){
 				try{
-					int lane = Integer.parseInt(s);
+					String[] sList = s.split(" ");
+					int lane = Integer.parseInt(sList[0]);
+					int h = Integer.parseInt(sList[2]);
+					int y1 = Integer.parseInt(sList[1]);
+					int y = h - (y1 - verticalBuffer);
+					y = (int)((float)y/h*field.height);
+
+
 					int midLane = (int)((lane+0.5)*laneInterval);
 					Color c;
 					if (color == Color.BLUE){
@@ -165,7 +175,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					} else {
 						c = Color.BLUE;
 					}
-					Minion m = new Minion(midLane, (int)(field.height-mheight), mwidth, mheight, c, false);
+					Minion m = new Minion(midLane, y, mwidth, mheight, c, false);
 					minions.add(m);
 				} catch (NumberFormatException e){
 					Gdx.app.exit();
@@ -247,6 +257,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			if(c == null){
 				continue;
 			}
+			c.setSelected(false);
 			if (c.getBounds().contains(x, y)){
 				if(c.isSelected()){
 					c.setSelected(false);
@@ -255,10 +266,13 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					c.setSelected(true);
 					cardSelected = c.getPos();
 				}
-
-				break;
 			}
 		}
+
+		/*if (cardSelected != -1 && y >= verticalBuffer){
+			int lane = x/laneInterval;
+			deployMinion(lane, y);
+		}*/
 
 		return true;
 	}
@@ -268,38 +282,46 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		y = (int)(field.height-y);
 
 		if (cardSelected != -1){
+			cardDragged = false;
 			Card c = cards.get(cardSelected);
 			if (y >= verticalBuffer){
 				int lane = x/laneInterval;
-				int midLane = (int)((lane+0.5)*laneInterval);
-				Minion m = new Minion(midLane, verticalBuffer+mheight, mwidth, mheight, color, true);
-				minions.add(m);
-
-				cards.remove(cardSelected);
-				cards.add(cardSelected, null);
-				cardsNeeded.add(cardSelected);
-				cardSelected = -1;
-
-				if (!isSingle){
-					bluetoothManager.send(""+lane+"~");
-				}
+				deployMinion(lane, y);
 			} else {
 				c.setSelected(false);
+				c.setSelected(true);
 			}
+		}
+		return true;
+	}
 
+	@Override
+	public boolean touchDragged(int screenX, int y, int pointer) {
+		y = Math.max(y, (int)((field.height-verticalBuffer)/2));
+		y = (int)(field.height-y);
+		if (cardSelected != -1){
+			Card c = cards.get(cardSelected);
+			c.move(screenX-Card.width/2, y-Card.height/2);
+			cardDragged = true;
 		}
 
 		return true;
 	}
 
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if (cardSelected != -1){
-			Card c = cards.get(cardSelected);
-			c.move(screenX-Card.width/2, (int)(field.height-screenY)-Card.height/2);
-		}
+	private void deployMinion(int lane, int y){
+		y = Math.min(y, (int)((field.height-verticalBuffer)/2+verticalBuffer));
+		int midLane = (int)((lane+0.5)*laneInterval);
+		Minion m = new Minion(midLane, y, mwidth, mheight, color, true);
+		minions.add(m);
 
-		return true;
+		cards.remove(cardSelected);
+		cards.add(cardSelected, null);
+		cardsNeeded.add(cardSelected);
+		cardSelected = -1;
+
+		if (!isSingle){
+			bluetoothManager.send(""+lane+" "+y+" "+(int)field.height+"~");
+		}
 	}
 
 	@Override
