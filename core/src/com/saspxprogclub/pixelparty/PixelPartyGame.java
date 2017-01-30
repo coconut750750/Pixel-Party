@@ -31,7 +31,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int cardBorderWidth;
 	private int cardSelected;
 	final static private int totalNumCards = 4;
-	private int currentNumCards;
 	private int cardMargin;
 	private BluetoothManager bluetoothManager;
 	private Color color;
@@ -82,9 +81,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 	}
 
-	public void initCards(){
+	private void initCards(){
 		cardBoardWidth = (int)(fieldRight/4*3);
-		currentNumCards = 4;
 		cardBoardMargin =(int)((fieldRight-cardBoardWidth)/2);
 		cardMargin = cardBoardWidth/60;
 		cardSelected = -1;
@@ -119,7 +117,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	@Override
 	public void resume() {}
 
-	public void update(float dt){
+	private void update(float dt){
 		List<Minion> tempMinions = new ArrayList<Minion>();
 		for(Minion m : minions){
 			if (m.getDelay() <= 0){
@@ -150,7 +148,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				int i = cardsNeeded.get(0);
 				cardsNeeded.remove(0);
 				cards.set(i, new Card(i, Color.RED));
-				currentNumCards += 1;
 				currentRegen = cardRegen;
 
 			}
@@ -178,7 +175,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 	}
 
-	public void draw(){
+	private void draw(){
 		Gdx.gl.glClearColor(0f,0f,0f,1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -206,7 +203,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		shapeRenderer.end();
 	}
 
-	public void drawLanes(){
+	private void drawLanes(){
 		int width = (int)(fieldRight/100);
 		for (int i = laneInterval; i <= fieldRight-laneInterval; i+=laneInterval){
 			shapeRenderer.rect(i-width,verticalBuffer,width, fieldTop);
@@ -214,7 +211,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		shapeRenderer.rect(0,verticalBuffer,fieldRight, width);
 	}
 
-	public void drawCardBoard(){
+	private void drawCardBoard(){
 		shapeRenderer.rect(cardBoardMargin, 0, cardBoardWidth, verticalBuffer);
 	}
 
@@ -280,7 +277,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 				cards.remove(cardSelected);
 				cards.add(cardSelected, null);
-				currentNumCards -= 1;
 				cardsNeeded.add(cardSelected);
 				cardSelected = -1;
 
