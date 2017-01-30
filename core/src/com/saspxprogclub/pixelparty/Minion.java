@@ -2,11 +2,11 @@ package com.saspxprogclub.pixelparty;
 
 import com.badlogic.gdx.graphics.Color;
 
-/**
+/***
  * Created by Brandon on 1/25/17.
  */
 
-public class Minion extends GameObject {
+class Minion extends GameObject {
 
     private Color color;
     private float delay;
@@ -24,15 +24,15 @@ public class Minion extends GameObject {
         return color;
     }
 
-    public void subtractDelay(float dt){
+    void subtractDelay(float dt){
         this.delay -= dt;
     }
 
-    public float getDelay(){
+    float getDelay(){
         return this.delay;
     }
 
-    public boolean isOwned(){
+    boolean isOwned(){
         return owned;
     }
 }

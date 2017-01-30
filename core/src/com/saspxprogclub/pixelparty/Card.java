@@ -7,13 +7,13 @@ import com.badlogic.gdx.math.Rectangle;
  * Created by Brandon on 1/29/17.
  */
 
-public class Card {
+class Card {
 
-    public static int width;
+    static int width;
     public static int height;
-    public static int cardStart;
-    public static int margin;
-    public static int borderWidth1;
+    private static int cardStart;
+    private static int margin;
+    private static int borderWidth1;
 
     private int pos;
     private int start;
@@ -25,7 +25,7 @@ public class Card {
     private boolean selected;
     private Rectangle bounds = new Rectangle();
 
-    public static void initCards(int width, int height, int cardStart, int margin, int borderWidth){
+    static void initCards(int width, int height, int cardStart, int margin, int borderWidth){
         Card.width = width;
         Card.height = height;
         Card.cardStart = cardStart;
@@ -33,7 +33,7 @@ public class Card {
         Card.borderWidth1 = borderWidth;
     }
 
-    public Card(int pos, Color color){
+    Card(int pos, Color color){
         this.pos = pos;
         this.x = cardStart+width*pos+margin*(pos+1);
         this.start = cardStart+width*pos+margin*(pos+1);
@@ -47,25 +47,25 @@ public class Card {
         bounds.setHeight(height);
     }
 
-    public Rectangle getBounds() {
+    Rectangle getBounds() {
         bounds.setX(getX());
         bounds.setY(getY());
         return bounds;
     }
 
-    public int getPos(){
+    int getPos(){
         return pos;
     }
 
-    public int getX(){
+    int getX(){
         return x;
     }
 
-    public int getY(){
+    int getY(){
         return y;
     }
 
-    public void move(int x, int y){
+    void move(int x, int y){
         this.x = x;
         this.y = y;
     }
@@ -74,23 +74,23 @@ public class Card {
         return color;
     }
 
-    public void setBorderColor(Color color){
+    private void setBorderColor(Color color){
         this.borderColor = color;
     }
 
-    public Color getBorderColor(){
+    Color getBorderColor(){
         return this.borderColor;
     }
 
-    public int getBorderWidth(){
+    int getBorderWidth(){
         return borderWidth;
     }
 
-    public boolean isSelected(){
+    boolean isSelected(){
         return selected;
     }
 
-    public void setSelected(boolean selected){
+    void setSelected(boolean selected){
         this.selected = selected;
         if (selected){
             this.borderWidth = Card.borderWidth1 * 2;

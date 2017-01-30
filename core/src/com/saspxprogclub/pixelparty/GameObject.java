@@ -7,12 +7,12 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Brandon on 1/25/17.
  */
 
-public class GameObject {
+class GameObject {
     private Vector2 position = new Vector2();
     private Vector2 velocity = new Vector2();
     private Rectangle bounds = new Rectangle();
 
-    protected GameObject(int width, int height){
+    GameObject(int width, int height){
         bounds.setWidth(width);
         bounds.setHeight(height);
     }
@@ -27,7 +27,7 @@ public class GameObject {
         this.bounds = bounds;
     }
 
-    public void updateBounds(){
+    void updateBounds(){
         bounds.set(position.x, position.y, bounds.width, bounds.height);
     }
 
@@ -35,7 +35,7 @@ public class GameObject {
         return bounds.height;
     }
 
-    public float getWidth(){
+    float getWidth(){
         return bounds.width;
     }
 
@@ -43,19 +43,19 @@ public class GameObject {
         this.position = position;
     }
 
-    public float getX(){
+    float getX(){
         return position.x;
     }
 
-    public float getY(){
+    float getY(){
         return position.y;
     }
 
-    public float getVelocityX(){
+    private float getVelocityX(){
         return velocity.x;
     }
 
-    public float getVelocityY(){
+    private float getVelocityY(){
         return velocity.y;
     }
 
@@ -71,11 +71,11 @@ public class GameObject {
         this.velocity = velocity;
     }
 
-    public void setVelocity(float x, float y) {
+    void setVelocity(float x, float y) {
         velocity.set(x, y);
     }
 
-    public void move(float x, float y){
+    void move(float x, float y){
         position.set(x,y);
     }
 
@@ -83,11 +83,11 @@ public class GameObject {
         position.add(x, y);
     }
 
-    public void integrate(float dt){
+    void integrate(float dt){
         position.add(velocity.x*dt, velocity.y*dt);
     }
 
-    public float bottom(){
+    float bottom(){
         return bounds.y;
     }
 
@@ -99,7 +99,7 @@ public class GameObject {
         return bounds.x+bounds.width;
     }
 
-    public float top(){
+    float top(){
         return bounds.y+bounds.height;
     }
 }
