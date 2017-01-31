@@ -1,23 +1,23 @@
 package com.saspxprogclub.pixelparty;
 
 import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/***
  * Created by Brandon on 1/28/17.
+ * used to communicate with libgdx core
  */
 
-public class BluetoothNativeManager implements com.saspxprogclub.pixelparty.BluetoothManager{
+class BluetoothNativeManager implements com.saspxprogclub.pixelparty.BluetoothManager{
 
-    BluetoothSocket socket;
-    List<String> messages;
+    private BluetoothSocket socket;
+    private List<String> messages;
 
-    public BluetoothNativeManager(BluetoothSocket bluetoothSocket){
+    BluetoothNativeManager(BluetoothSocket bluetoothSocket){
         this.socket = bluetoothSocket;
         messages = new ArrayList<>();
     }

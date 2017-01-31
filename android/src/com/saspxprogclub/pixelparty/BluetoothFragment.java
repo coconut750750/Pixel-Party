@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
@@ -34,10 +33,10 @@ public class BluetoothFragment extends Fragment {
     private BluetoothAdapter bluetooth;
     public static BluetoothSocket socket;
 
-    private ListView list;
-    private Button searchButton;
-    private Button listenButton;
-    private Button menuButton;
+    ListView list;
+    Button searchButton;
+    Button listenButton;
+    Button menuButton;
 
 
     private ArrayList<BluetoothDevice> foundDevices;

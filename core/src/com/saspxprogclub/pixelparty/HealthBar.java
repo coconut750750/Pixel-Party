@@ -1,20 +1,19 @@
 package com.saspxprogclub.pixelparty;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 /***
  * Created by Brandon on 1/30/17.
  */
 
-public class HealthBar{
+class HealthBar{
 
     public final static int width = 30;
     public final static int height = 150;
 
-    int total;
-    int current;
-    Color color;
+    private int total;
+    private int current;
+    private Color color;
 
     HealthBar(int total, Color color){
         this.total = total;
@@ -23,7 +22,7 @@ public class HealthBar{
     }
 
 
-    public int getSplit(){
+    int getSplit(){
         return (int)(width*((float)current/(float)total));
     }
 

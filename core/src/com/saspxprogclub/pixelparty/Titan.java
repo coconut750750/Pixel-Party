@@ -5,9 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 
 /***
  * Created by Brandon on 1/30/17.
+ * Test minion class
  */
 
-public class Titan extends Minion {
+class Titan extends Minion {
 
     private final static int width = 30;
     private final static int height = 30;

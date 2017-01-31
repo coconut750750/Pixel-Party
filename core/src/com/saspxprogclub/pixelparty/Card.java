@@ -25,6 +25,14 @@ class Card {
     private boolean selected;
     private Rectangle bounds = new Rectangle();
 
+    /**
+     * must call this before creating any cards
+     * @param width width of all cards (determined by width of screen)
+     * @param height height of all cards (determined by height of screen)
+     * @param cardStart x value of where card starts
+     * @param margin pixels between each card
+     * @param borderWidth pixels of each card border
+     */
     static void initCards(int width, int height, int cardStart, int margin, int borderWidth){
         Card.width = width;
         Card.height = height;
@@ -32,6 +40,12 @@ class Card {
         Card.margin = margin;
         Card.borderWidth1 = borderWidth;
     }
+
+    /**
+     * constructor
+     * @param pos integer value n, nth card
+     * @param color color of card (will change to sprite/image)
+     */
 
     Card(int pos, Color color){
         this.pos = pos;
@@ -47,49 +61,87 @@ class Card {
         bounds.setHeight(height);
     }
 
+    /**
+     * @return rectangle of the card to determine if user touched it or not
+     */
+
     Rectangle getBounds() {
         bounds.setX(getX());
         bounds.setY(getY());
         return bounds;
     }
 
+    /**
+     * @return the integer position of card, nth card
+     */
     int getPos(){
         return pos;
     }
 
+    /**
+     * @return x position
+     */
     int getX(){
         return x;
     }
 
+    /**
+     * @return y position
+     */
     int getY(){
         return y;
     }
 
+    /**
+     * moves the card for dragging
+     * @param x x position
+     * @param y y position
+     */
     void move(int x, int y){
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * @return color of card (will change later to image)
+     */
     public Color getColor(){
         return color;
     }
 
+    /**
+     * sets border color to determine if card was clicked or not
+     * @param color border color
+     */
     private void setBorderColor(Color color){
         this.borderColor = color;
     }
 
+    /**
+     * @return border color
+     */
     Color getBorderColor(){
         return this.borderColor;
     }
 
+    /**
+     * @return border width
+     */
     int getBorderWidth(){
         return borderWidth;
     }
 
+    /**
+     * @return if card is selected
+     */
     boolean isSelected(){
         return selected;
     }
 
+    /**
+     * changes border width, border color, and position depending on if card is selected or not
+     * @param selected boolean true if card is selected
+     */
     void setSelected(boolean selected){
         this.selected = selected;
         if (selected){
