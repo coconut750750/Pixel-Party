@@ -6,16 +6,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
-	private int mheight;
-	private int mwidth;
+	//actual height and width = field.height/___
+	//this is done in the draw function
+	private int mheight = 30;
+	private int mwidth = 30;
 
 	private Rectangle field = new Rectangle();
 	private ShapeRenderer shapeRenderer;
@@ -24,7 +29,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private List<Card> cards;
 	private List<Integer> cardsNeeded;
 	private int laneInterval;
-	private int numLanes;
+	private final int numLanes = 5;
 	private int verticalBuffer;
 	private int cardBoardWidth;
 	private int cardBoardMargin;
@@ -38,6 +43,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private boolean isSingle;
 	final static private float cardRegen = 2;
 	private float currentRegen;
+	private BitmapFont font;
+	private SpriteBatch spriteBatch;
 
 	public PixelPartyGame(BluetoothManager bluetoothManager, Color color){
 		this.isSingle = color == Color.BLACK;
@@ -54,8 +61,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		field.set(0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		mheight = (int)(field.height/30.0);
-		mwidth = mheight;
 
 		fieldLeft = field.x;
 		fieldRight = field.x+field.width;
@@ -71,10 +76,12 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		minions = new ArrayList<Minion>();
 
-		numLanes = 4;
 		laneInterval = (int)(fieldRight/numLanes);
 
 		Gdx.input.setInputProcessor(this);
+		font = new BitmapFont();
+		spriteBatch = new SpriteBatch();
+		font.getData().setScale(1.5f);
 	}
 
 	private void initCards(){
@@ -136,6 +143,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 			m.integrate(dt);
 			m.updateBounds();
+			m.subtractHealth(1);
 
 			if(m.top() <= field.height && m.bottom() >= verticalBuffer+m.getHeight()){
 				tempMinions.add(m);
@@ -175,8 +183,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					} else {
 						c = Color.BLUE;
 					}
-					Minion m = new Minion(midLane, y, mwidth, mheight, c, false);
-					minions.add(m);
+					Titan t = new Titan(new Vector2(midLane, y), c, false, 1);
+					minions.add(t);
 				} catch (NumberFormatException e){
 					Gdx.app.exit();
 				}
@@ -186,18 +194,58 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	}
 
 	private void draw(){
-		Gdx.gl.glClearColor(0f,0f,0f,1f);
+		Gdx.gl.glClearColor(255f,255f,0f,1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(Color.WHITE);
 		drawLanes();
-		shapeRenderer.setColor(Color.GREEN);
 		drawCardBoard();
+		drawMinions();
+		drawCards();
+		shapeRenderer.end();
+	}
+
+	private void drawLanes(){
+		shapeRenderer.setColor(Color.WHITE);
+		int width = (int)(fieldRight/100);
+		for (int i = laneInterval; i <= fieldRight-laneInterval; i+=laneInterval){
+			shapeRenderer.rect(i-width,verticalBuffer,width, fieldTop);
+		}
+		shapeRenderer.rect(0,verticalBuffer,fieldRight, width);
+	}
+
+	private void drawCardBoard(){
+		shapeRenderer.setColor(Color.GREEN);
+		shapeRenderer.rect(cardBoardMargin, 0, cardBoardWidth, verticalBuffer);
+	}
+
+	private void drawMinions(){
+		spriteBatch.begin();
 		for (Minion m : minions) {
 			shapeRenderer.setColor(m.getColor());
-			shapeRenderer.rect(m.getX()-m.getWidth()/2,m.getY()-m.getHeight()/2,m.getWidth(), m.getHeight());
+			int w = (int)(field.height/m.getWidth());
+			int h = (int)(field.height/m.getHeight());
+			shapeRenderer.rect(m.getX()-w/2,m.getY()-h/2,w, h);
+			//TextWrapper name = m.getName();
+			//name.setPosition(new Vector2(m.getX(), m.getY()+h/2+(field.height/Minion.nameBuffer)));
+			//name.draw(spriteBatch, font);
+
+			HealthBar health = m.getHealth();
+			int y = (int)(m.getY()+h/2+(field.height/Minion.nameBuffer));
+			int x = (int)(m.getX()-field.height/HealthBar.width/2);
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.rect(x, y, field.height/HealthBar.width, field.height/HealthBar.height);
+
+			shapeRenderer.setColor(m.getColor());
+			shapeRenderer.rect(x, y, field.height/health.getSplit(), field.height/HealthBar.height);
+			Gdx.app.log("Asdf",""+health.getHealth());
+
+
 		}
+		spriteBatch.end();
+	}
+
+	private void drawCards(){
 		for(Card c : cards){
 			if(c == null){
 				continue;
@@ -210,19 +258,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			shapeRenderer.setColor(c.getColor());
 			shapeRenderer.rect(c.getX()+borderWidth, c.getY()+borderWidth, Card.width-2*borderWidth, Card.height-2*borderWidth);
 		}
-		shapeRenderer.end();
-	}
-
-	private void drawLanes(){
-		int width = (int)(fieldRight/100);
-		for (int i = laneInterval; i <= fieldRight-laneInterval; i+=laneInterval){
-			shapeRenderer.rect(i-width,verticalBuffer,width, fieldTop);
-		}
-		shapeRenderer.rect(0,verticalBuffer,fieldRight, width);
-	}
-
-	private void drawCardBoard(){
-		shapeRenderer.rect(cardBoardMargin, 0, cardBoardWidth, verticalBuffer);
 	}
 
 	@Override
@@ -269,11 +304,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 		}
 
-		/*if (cardSelected != -1 && y >= verticalBuffer){
-			int lane = x/laneInterval;
-			deployMinion(lane, y);
-		}*/
-
 		return true;
 	}
 
@@ -311,8 +341,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private void deployMinion(int lane, int y){
 		y = Math.min(y, (int)((field.height-verticalBuffer)/2+verticalBuffer));
 		int midLane = (int)((lane+0.5)*laneInterval);
-		Minion m = new Minion(midLane, y, mwidth, mheight, color, true);
-		minions.add(m);
+		Minion t = new Titan(new Vector2(midLane, y), color, true, 1);
+		minions.add(t);
 
 		cards.remove(cardSelected);
 		cards.add(cardSelected, null);
