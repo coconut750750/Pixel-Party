@@ -72,11 +72,11 @@ class GameObject {
         return position.y;
     }
 
-    private float getVelocityX(){
+    public float getVelocityX(){
         return velocity.x;
     }
 
-    private float getVelocityY(){
+    public float getVelocityY(){
         return velocity.y;
     }
 

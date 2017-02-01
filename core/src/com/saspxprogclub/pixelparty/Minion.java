@@ -96,4 +96,12 @@ class Minion extends GameObject {
     int getLevel(){
         return this.level;
     }
+
+    /**
+     * sets velocity of minion
+     * @param fieldHeight height of the phone screen
+     */
+    void setVelocity(float fieldHeight) {
+        super.setVelocity(0,fieldHeight/getVelocityY());
+    }
 }

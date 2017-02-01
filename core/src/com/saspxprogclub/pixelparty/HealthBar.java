@@ -22,8 +22,8 @@ class HealthBar{
     }
 
 
-    int getSplit(){
-        return (int)(width*((float)current/(float)total));
+    float getSplit(){
+        return(float)current/(float)total;
     }
 
     public Color getColor(){

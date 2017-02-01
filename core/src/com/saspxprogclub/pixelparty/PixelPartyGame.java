@@ -134,9 +134,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		for(Minion m : minions){
 			if (m.getDelay() <= 0){
 				if(m.isOwned()){
-					m.setVelocity(0, field.height/10);
+					m.setVelocity(field.height);
 				} else {
-					m.setVelocity(0, -1*field.height/10);
+					m.setVelocity(-1*field.height);
 				}
 			} else {
 				m.subtractDelay(dt);
@@ -144,8 +144,11 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			m.integrate(dt);
 			m.updateBounds();
 			m.subtractHealth(1);
+			Gdx.app.log("Asdf",""+(m.getHealth().getHealth()>=0));
 
-			if(m.top() <= field.height && m.bottom() >= verticalBuffer+m.getHeight()){
+			if(m.top() <= field.height &&
+					m.bottom() >= verticalBuffer+m.getHeight() &&
+					m.getHealth().getHealth() >= 0){
 				tempMinions.add(m);
 			}
 		}
@@ -237,9 +240,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			shapeRenderer.rect(x, y, field.height/HealthBar.width, field.height/HealthBar.height);
 
 			shapeRenderer.setColor(m.getColor());
-			shapeRenderer.rect(x, y, field.height/health.getSplit(), field.height/HealthBar.height);
-			Gdx.app.log("Asdf",""+health.getHealth());
-
+			shapeRenderer.rect(x, y, field.height/HealthBar.width*health.getSplit(), field.height/HealthBar.height);
 
 		}
 		spriteBatch.end();
