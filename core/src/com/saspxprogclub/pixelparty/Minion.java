@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 class Minion extends GameObject {
 
     static final int nameBuffer = 100;
-    static final int totalHealth = 1000;
+    private static final int totalHealth = 1000;
 
     private Color color;
     private float delay;
@@ -41,11 +41,7 @@ class Minion extends GameObject {
         this.name = new TextWrapper(name, pos);
         this.health = new HealthBar(totalHealth, color);
         this.level = level;
-        if (owned){
-            this.range = range;
-        } else {
-            this.range = -1*range;
-        }
+        this.range = range;
         this.isMoving = false;
     }
 
@@ -129,7 +125,12 @@ class Minion extends GameObject {
 
     @Override
     void updateBounds() {
-        super.setBounds(getX(), getY()+range, getWidth(), getHeight()+range);
+        if(owned){
+            super.setBounds(getX(), getY()+range, getWidth(), getHeight()+range);
+        } else {
+            super.setBounds(getX(), getY(), getWidth(), getHeight()+range);
+        }
+
     }
 
     boolean update(float dt, float fieldHeight){

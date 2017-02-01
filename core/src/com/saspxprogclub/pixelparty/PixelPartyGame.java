@@ -135,7 +135,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			if(m.update(dt, field.height)){
 				tempMinions.add(m);
 			}
-			Gdx.app.log("height",""+m.getHeight());
 			for(Minion other : enemyMinions){
 				if(m.collideWith(other)){
 					m.setVelocity(0,0);
@@ -145,12 +144,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				}
 			}
 		}
+		minions = tempMinions;
+		tempMinions = new ArrayList<Minion>();
 		for(Minion m : enemyMinions){
 			if(m.update(dt, field.height)){
 				tempMinions.add(m);
 			}
 		}
-		minions = tempMinions;
+		enemyMinions = tempMinions;
 
 		if (cardsNeeded.size() == 0){
 			currentRegen = cardRegen;
@@ -161,7 +162,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				cardsNeeded.remove(0);
 				cards.set(i, new Card(i, Color.RED));
 				currentRegen = cardRegen;
-
 			}
 		}
 
@@ -190,7 +190,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					Gdx.app.exit();
 				}
 			}
-			//Gdx.app.debug("bluetooth recieved", ""+total);
 		}
 	}
 
@@ -222,7 +221,10 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	private void drawMinions(){
 		spriteBatch.begin();
-		for (Minion m : minions) {
+		List<Minion> temp = new ArrayList<Minion>();
+		temp.addAll(minions);
+		temp.addAll(enemyMinions);
+		for (Minion m : temp) {
 			shapeRenderer.setColor(m.getColor());
 			int w = (int)(field.height/m.getWidth());
 			int h = (int)(field.height/m.getHeight());

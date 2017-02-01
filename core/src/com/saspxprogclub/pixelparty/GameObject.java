@@ -33,7 +33,6 @@ class GameObject {
 
     /**
      * sets the bounds of the object
-     * @param bounds the new bounds
      */
     public void setBounds(float x, float y, float width, float height){
         bounds.set(x, y, width, height);
