@@ -35,15 +35,15 @@ class GameObject {
      * sets the bounds of the object
      * @param bounds the new bounds
      */
-    public void setBounds(Rectangle bounds){
-        this.bounds = bounds;
+    public void setBounds(float x, float y, float width, float height){
+        bounds.set(x, y, width, height);
     }
 
     /**
      * updates bounds if object was moved
      */
     void updateBounds(){
-        bounds.set(position.x, position.y, bounds.width, bounds.height);
+        setBounds(position.x, position.y, bounds.width, bounds.height);
     }
 
     /**

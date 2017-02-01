@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 class Minion extends GameObject {
 
     static final int nameBuffer = 100;
+    static final int totalHealth = 1000;
 
     private Color color;
     private float delay;
@@ -17,6 +18,8 @@ class Minion extends GameObject {
     private TextWrapper name;
     private HealthBar health;
     private int level;
+    private int range;
+    private boolean isMoving;
 
     /**
      * constructor
@@ -27,17 +30,23 @@ class Minion extends GameObject {
      * @param owned boolean if user owns it, or its from bluetooth transmission
      * @param name name of the minion, final constant in each minion class
      * @param level level of minion, determines damage reduction (armor)
-     * TODO: add the range of the minion
+     * @param range range of the minion
      */
-    Minion(Vector2 pos, int width, int height, Color color, boolean owned, String name, int level) {
-        super(width, height);
+    Minion(Vector2 pos, int width, int height, Color color, boolean owned, String name, int level, int range) {
+        super(width, height+range);
         setPosition(pos);
         this.color = color;
         this.delay = 1.0f;
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
-        this.health = new HealthBar(100, color);
+        this.health = new HealthBar(totalHealth, color);
         this.level = level;
+        if (owned){
+            this.range = range;
+        } else {
+            this.range = -1*range;
+        }
+        this.isMoving = false;
     }
 
     /**
@@ -59,6 +68,14 @@ class Minion extends GameObject {
      */
     float getDelay(){
         return this.delay;
+    }
+
+    void setMoving(boolean isMoving){
+        this.isMoving = isMoving;
+    }
+
+    boolean isMoving(){
+        return this.isMoving;
     }
 
     /**
@@ -103,5 +120,39 @@ class Minion extends GameObject {
      */
     void setVelocity(float fieldHeight) {
         super.setVelocity(0,fieldHeight/getVelocityY());
+    }
+
+    @Override
+    public float getHeight() {
+        return super.getHeight()-range;
+    }
+
+    @Override
+    void updateBounds() {
+        super.setBounds(getX(), getY()+range, getWidth(), getHeight()+range);
+    }
+
+    boolean update(float dt, float fieldHeight){
+        if (!isMoving() && getDelay() <= 0){
+            setMoving(true);
+            if(isOwned()){
+                setVelocity(fieldHeight);
+            } else {
+                setVelocity(-1*fieldHeight);
+            }
+        } else {
+            subtractDelay(dt);
+        }
+        integrate(dt);
+        updateBounds();
+        subtractHealth(1);
+
+        return (top() <= fieldHeight &&
+                bottom() >= PixelPartyGame.verticalBuffer+getHeight() &&
+                getHealth().getHealth() >= 0);
+    }
+
+    boolean collideWith(Minion other){
+        return getBounds().contains(other.getBounds());
     }
 }

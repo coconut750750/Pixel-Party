@@ -21,21 +21,21 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	//this is done in the draw function
 	private int mheight = 30;
 	private int mwidth = 30;
+	public static int verticalBuffer;
 
 	private Rectangle field = new Rectangle();
 	private ShapeRenderer shapeRenderer;
 	private float fieldTop, fieldBot, fieldLeft, fieldRight;
 	private List<Minion> minions;
+	private List<Minion> enemyMinions;
 	private List<Card> cards;
 	private List<Integer> cardsNeeded;
 	private int laneInterval;
 	private final int numLanes = 5;
-	private int verticalBuffer;
 	private int cardBoardWidth;
 	private int cardBoardMargin;
 	private int cardBorderWidth;
 	private int cardSelected;
-	private boolean cardDragged;
 	final static private int totalNumCards = 4;
 	private int cardMargin;
 	private BluetoothManager bluetoothManager;
@@ -68,13 +68,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		fieldBot = field.y;
 		fieldTop = field.y+field.height;
 
-		verticalBuffer = (int)((double)field.height/7.0);
+		verticalBuffer = (int)(field.height/7.0);
 		initCards();
 		initBluetooth();
 
 		shapeRenderer = new ShapeRenderer();
 
 		minions = new ArrayList<Minion>();
+		enemyMinions = new ArrayList<Minion>();
 
 		laneInterval = (int)(fieldRight/numLanes);
 
@@ -89,7 +90,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardBoardMargin =(int)((fieldRight-cardBoardWidth)/2);
 		cardMargin = cardBoardWidth/60;
 		cardSelected = -1;
-		cardDragged = false;
 
 		cards = new ArrayList<Card>();
 		cardsNeeded = new ArrayList<Integer>();
@@ -132,23 +132,21 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private void update(float dt){
 		List<Minion> tempMinions = new ArrayList<Minion>();
 		for(Minion m : minions){
-			if (m.getDelay() <= 0){
-				if(m.isOwned()){
-					m.setVelocity(field.height);
-				} else {
-					m.setVelocity(-1*field.height);
-				}
-			} else {
-				m.subtractDelay(dt);
+			if(m.update(dt, field.height)){
+				tempMinions.add(m);
 			}
-			m.integrate(dt);
-			m.updateBounds();
-			m.subtractHealth(1);
-			Gdx.app.log("Asdf",""+(m.getHealth().getHealth()>=0));
-
-			if(m.top() <= field.height &&
-					m.bottom() >= verticalBuffer+m.getHeight() &&
-					m.getHealth().getHealth() >= 0){
+			Gdx.app.log("height",""+m.getHeight());
+			for(Minion other : enemyMinions){
+				if(m.collideWith(other)){
+					m.setVelocity(0,0);
+					other.setVelocity(0,0);
+					m.subtractHealth(1);
+					other.subtractHealth(1);
+				}
+			}
+		}
+		for(Minion m : enemyMinions){
+			if(m.update(dt, field.height)){
 				tempMinions.add(m);
 			}
 		}
@@ -187,7 +185,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 						c = Color.BLUE;
 					}
 					Titan t = new Titan(new Vector2(midLane, y), c, false, 1);
-					minions.add(t);
+					enemyMinions.add(t);
 				} catch (NumberFormatException e){
 					Gdx.app.exit();
 				}
@@ -283,7 +281,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		//(0,0) is top left, not bot left
-		//(0,0) is top left when drawn
+		//(0,0) is bot left when drawn
 
 		//Gdx.app.log("touched",""+x);
 		y = (int)(field.height - y);
@@ -313,7 +311,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		y = (int)(field.height-y);
 
 		if (cardSelected != -1){
-			cardDragged = false;
 			Card c = cards.get(cardSelected);
 			if (y >= verticalBuffer){
 				int lane = x/laneInterval;
@@ -333,7 +330,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		if (cardSelected != -1){
 			Card c = cards.get(cardSelected);
 			c.move(screenX-Card.width/2, y-Card.height/2);
-			cardDragged = true;
 		}
 
 		return true;
