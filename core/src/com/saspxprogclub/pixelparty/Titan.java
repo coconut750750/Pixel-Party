@@ -3,6 +3,8 @@ package com.saspxprogclub.pixelparty;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
+import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
+
 /***
  * Created by Brandon on 1/30/17.
  * Test minion class
@@ -14,18 +16,18 @@ class Titan extends Minion {
     public final static int height = 30;
     private final static String name = "Titan";
     private final static int velY = 10;
-    private final static int range = 10; //one tenth of height
+    private final static int range = 15;
 
     Titan(Vector2 pos, Color color, boolean owned, int level) {
-        super(pos, width, height, color, owned, name, level, (int)((float)range/(float)height));
+        super(pos, (int)(field.height/width), (int)(field.height/height), color, owned, name, level, (int)(field.height/range));
     }
 
     /**
-     * overrides gameobject method
+     * overrides GameObject method
      * @return final velocity of this minion
      */
     @Override
     public float getVelocityY() {
-        return velY;
+        return field.height/velY;
     }
 }

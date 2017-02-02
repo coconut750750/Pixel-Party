@@ -3,6 +3,8 @@ package com.saspxprogclub.pixelparty;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
+import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
+
 /***
  * Created by Brandon on 1/25/17.
  */
@@ -39,7 +41,7 @@ class Minion extends GameObject {
         this.delay = 1.0f;
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
-        this.health = new HealthBar(totalHealth, color);
+        this.health = new HealthBar(totalHealth, color, pos);
         this.level = level;
         this.range = range;
         this.isMoving = false;
@@ -112,10 +114,10 @@ class Minion extends GameObject {
 
     /**
      * sets velocity of minion
-     * @param fieldHeight height of the phone screen
+     * @param direction of minion
      */
-    void setVelocity(float fieldHeight) {
-        super.setVelocity(0,fieldHeight/getVelocityY());
+    void setVelocity(int direction) {
+        super.setVelocity(0,direction*getVelocityY());
     }
 
     @Override
@@ -125,23 +127,20 @@ class Minion extends GameObject {
 
     @Override
     void updateBounds() {
-        float w = getWidth();
-        float h = getHeight()+range;
-        if(owned){
-            super.setBounds(getX()-w/2, getY()+range-h/2, w, h);
+        if (owned){
+            setBounds(getX()-getWidth()/2, getY()+range-getHeight()/2, getWidth(), getHeight()+range);
         } else {
-            super.setBounds(getX()-w/2, getY()-h/2, w, h);
+            setBounds(getX()-getWidth()/2, getY()-getHeight()/2, getWidth(), getHeight()+range);
         }
-
     }
 
     boolean update(float dt, float fieldHeight){
         if (!isMoving() && getDelay() <= 0){
             setMoving(true);
             if(isOwned()){
-                setVelocity(fieldHeight);
+                setVelocity(1);
             } else {
-                setVelocity(-1*fieldHeight);
+                setVelocity(-1);
             }
         } else {
             subtractDelay(dt);
@@ -149,8 +148,8 @@ class Minion extends GameObject {
         integrate(dt);
         updateBounds();
 
-        return (top() <= fieldHeight &&
-                bottom() >= PixelPartyGame.verticalBuffer+getHeight() &&
+        return (bottom() <= fieldHeight &&
+                top() >= PixelPartyGame.verticalBuffer+getHeight() &&
                 getHealth().getHealth() >= 0);
     }
 

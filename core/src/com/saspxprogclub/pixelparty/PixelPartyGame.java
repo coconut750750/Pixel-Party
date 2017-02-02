@@ -23,7 +23,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private int mwidth = 30;
 	public static int verticalBuffer;
 
-	private Rectangle field = new Rectangle();
+	public static Rectangle field = new Rectangle();
 	private ShapeRenderer shapeRenderer;
 	private float fieldTop, fieldBot, fieldLeft, fieldRight;
 	private List<Minion> minions;
@@ -137,13 +137,11 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 			for(Minion other : enemyMinions){
 				if(m.collideWith(other)){
-					m.setVelocity(0,0);
-					other.setVelocity(0,0);
+					m.integrate(-1*dt);
+					other.integrate(-1*dt);
 					m.subtractHealth(1);
 					other.subtractHealth(1);
 				}
-				//Gdx.app.log("collide1",""+m.getBounds().y+"-"+(m.getBounds().y+m.getBounds().height));
-				//Gdx.app.log("collide2",""+other.getBounds().y+"-"+(other.getBounds().y+other.getBounds().height));
 			}
 		}
 		minions = tempMinions;
@@ -229,21 +227,15 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		temp.addAll(enemyMinions);
 		for (Minion m : temp) {
 			shapeRenderer.setColor(m.getColor());
-			int w = (int)(field.height/m.getWidth());
-			int h = (int)(field.height/m.getHeight());
+			int w = (int)(m.getWidth());
+			int h = (int)(m.getHeight());
 			shapeRenderer.rect(m.getX()-w/2,m.getY()-h/2,w, h);
 			//TextWrapper name = m.getName();
 			//name.setPosition(new Vector2(m.getX(), m.getY()+h/2+(field.height/Minion.nameBuffer)));
 			//name.draw(spriteBatch, font);
 
 			HealthBar health = m.getHealth();
-			int y = (int)(m.getY()+h/2+(field.height/Minion.nameBuffer));
-			int x = (int)(m.getX()-field.height/HealthBar.width/2);
-			shapeRenderer.setColor(Color.BLACK);
-			shapeRenderer.rect(x, y, field.height/HealthBar.width, field.height/HealthBar.height);
-
-			shapeRenderer.setColor(m.getColor());
-			shapeRenderer.rect(x, y, field.height/HealthBar.width*health.getSplit(), field.height/HealthBar.height);
+			health.draw(h, field.height, m.getColor(), shapeRenderer);
 
 		}
 		spriteBatch.end();
@@ -317,7 +309,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		if (cardSelected != -1){
 			Card c = cards.get(cardSelected);
-			if (y >= verticalBuffer){
+			if (y > verticalBuffer){
 				int lane = x/laneInterval;
 				deployMinion(lane, y);
 			} else {

@@ -3,6 +3,7 @@ package com.saspxprogclub.pixelparty;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+
 /***
  * Created by Brandon on 1/25/17.
  */
@@ -26,8 +27,7 @@ class GameObject {
      * @return rectangle object of the bounds
      */
     public Rectangle getBounds() {
-        bounds.setX(getX());
-        bounds.setY(getY());
+        updateBounds();
         return bounds;
     }
 
@@ -42,7 +42,8 @@ class GameObject {
      * updates bounds if object was moved
      */
     void updateBounds(){
-        setBounds(position.x, position.y, bounds.width, bounds.height);
+        bounds.setX(getX());
+        bounds.setY(getY());
     }
 
     /**
@@ -120,6 +121,6 @@ class GameObject {
     }
 
     float top(){
-        return bounds.y+bounds.height;
+        return bounds.y+getHeight();
     }
 }
