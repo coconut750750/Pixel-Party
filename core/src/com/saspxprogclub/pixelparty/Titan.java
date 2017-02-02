@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 class Titan extends Minion {
 
     private final static int width = 30;
-    private final static int height = 30;
+    public final static int height = 30;
     private final static String name = "Titan";
     private final static int velY = 10;
     private final static int range = 10;

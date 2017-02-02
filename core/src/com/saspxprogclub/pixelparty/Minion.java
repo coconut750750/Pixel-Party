@@ -146,7 +146,6 @@ class Minion extends GameObject {
         }
         integrate(dt);
         updateBounds();
-        subtractHealth(1);
 
         return (top() <= fieldHeight &&
                 bottom() >= PixelPartyGame.verticalBuffer+getHeight() &&

@@ -68,7 +68,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		fieldBot = field.y;
 		fieldTop = field.y+field.height;
 
-		verticalBuffer = (int)(field.height/7.0);
+		verticalBuffer = (int)(field.height/7f);
 		initCards();
 		initBluetooth();
 
@@ -142,6 +142,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					m.subtractHealth(1);
 					other.subtractHealth(1);
 				}
+				Gdx.app.log("collide",""+m.collideWith(other));
 			}
 		}
 		minions = tempMinions;
@@ -173,8 +174,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					int lane = Integer.parseInt(sList[0]);
 					int h = Integer.parseInt(sList[2]);
 					int y1 = Integer.parseInt(sList[1]);
-					int y = h - (y1 - verticalBuffer);
-					y = (int)((float)y/h*field.height);
+					float y = 1f-(float)y1/(float)h;
+					y = y*(field.height-verticalBuffer);
+					y = y + verticalBuffer;
 
 
 					int midLane = (int)((lane+0.5)*laneInterval);
@@ -349,7 +351,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardSelected = -1;
 
 		if (!isSingle){
-			bluetoothManager.send(""+lane+" "+y+" "+(int)field.height+"~");
+			bluetoothManager.send(""+lane+" "+(y-verticalBuffer)+" "+((int)field.height-verticalBuffer)+"~");
 		}
 	}
 
