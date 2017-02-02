@@ -125,10 +125,12 @@ class Minion extends GameObject {
 
     @Override
     void updateBounds() {
+        float w = getWidth();
+        float h = getHeight()+range;
         if(owned){
-            super.setBounds(getX(), getY()+range, getWidth(), getHeight()+range);
+            super.setBounds(getX()-w/2, getY()+range-h/2, w, h);
         } else {
-            super.setBounds(getX(), getY(), getWidth(), getHeight()+range);
+            super.setBounds(getX()-w/2, getY()-h/2, w, h);
         }
 
     }
@@ -153,6 +155,6 @@ class Minion extends GameObject {
     }
 
     boolean collideWith(Minion other){
-        return getBounds().contains(other.getBounds());
+        return getBounds().overlaps(other.getBounds());
     }
 }

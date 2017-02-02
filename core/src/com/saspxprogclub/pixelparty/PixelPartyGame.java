@@ -142,7 +142,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					m.subtractHealth(1);
 					other.subtractHealth(1);
 				}
-				Gdx.app.log("collide",""+m.collideWith(other));
+				//Gdx.app.log("collide1",""+m.getBounds().y+"-"+(m.getBounds().y+m.getBounds().height));
+				//Gdx.app.log("collide2",""+other.getBounds().y+"-"+(other.getBounds().y+other.getBounds().height));
 			}
 		}
 		minions = tempMinions;
