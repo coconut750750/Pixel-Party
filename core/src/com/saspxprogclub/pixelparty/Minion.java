@@ -45,6 +45,7 @@ class Minion extends GameObject {
         this.range = range;
         this.isMoving = false;
         this.cost = cost;
+        this.damage = damage;
     }
 
     /**
