@@ -69,6 +69,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		fieldTop = field.y+field.height;
 
 		verticalBuffer = (int)(field.height/6f);
+		laneInterval = (int)(fieldRight/numLanes);
 		initCards();
 		initBluetooth();
 		initTowers();
@@ -77,8 +78,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		minions = new ArrayList<Minion>();
 		enemyMinions = new ArrayList<Minion>();
-
-		laneInterval = (int)(fieldRight/numLanes);
 
 		Gdx.input.setInputProcessor(this);
 		font = new BitmapFont();
@@ -119,10 +118,18 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	}
 
 	private void initTowers(){
-		Tower.initTowers(laneInterval, color);
+		towers = new ArrayList<Tower>();
+		enemyTowers = new ArrayList<Tower>();
+		Tower.initTowers(laneInterval);
+		Color c;
+		if (color == Color.BLUE){
+			c = Color.RED;
+		} else {
+			c = Color.BLUE;
+		}
 		for(int i = 0; i < numLanes; i++){
-			towers.add(new Tower(new Vector2((int)((i+0.5)*laneInterval), verticalBuffer+(int)(laneInterval/2f))));
-			enemyTowers.add(new Tower(new Vector2((int)((i+0.5)*laneInterval), field.height-(int)(laneInterval/2f))));
+			towers.add(new Tower(new Vector2((int)((i+0.5)*laneInterval), verticalBuffer+(int)(laneInterval/2f)), color));
+			enemyTowers.add(new Tower(new Vector2((int)((i+0.5)*laneInterval), field.height-(int)(laneInterval/2f)), c));
 		}
 	}
 
@@ -157,12 +164,24 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					other.subtractHealth(1);
 				}
 			}
+			for(Tower tower : enemyTowers){
+				if(m.collideWith(tower)){
+					m.integrate(-1*dt);
+					tower.subtractHealth(1);
+				}
+			}
 		}
 		minions = tempMinions;
 		tempMinions = new ArrayList<Minion>();
 		for(Minion m : enemyMinions){
 			if(m.update(dt, field.height)){
 				tempMinions.add(m);
+			}
+			for(Tower tower : towers){
+				if(m.collideWith(tower)){
+					m.integrate(-1*dt);
+					tower.subtractHealth(1);
+				}
 			}
 		}
 		enemyMinions = tempMinions;

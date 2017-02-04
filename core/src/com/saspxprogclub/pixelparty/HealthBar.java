@@ -42,8 +42,8 @@ class HealthBar{
         return current;
     }
 
-    void draw(int h, float fieldHeight, Color c, ShapeRenderer shapeRenderer){
-        int y = (int)(pos.y+h/2+(fieldHeight/Minion.nameBuffer));
+    void draw(int height, float fieldHeight, Color c, ShapeRenderer shapeRenderer){
+        int y = (int)(pos.y+height/2+(fieldHeight/Minion.nameBuffer));
         int x = (int)(pos.x-fieldHeight/HealthBar.width/2);
         shapeRenderer.setColor(Color.BLACK);
         shapeRenderer.rect(x, y, fieldHeight/HealthBar.width, fieldHeight/HealthBar.height);

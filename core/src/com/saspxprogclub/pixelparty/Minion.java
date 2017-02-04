@@ -156,7 +156,7 @@ class Minion extends GameObject {
                 getHealth().getHealth() >= 0);
     }
 
-    boolean collideWith(Minion other){
+    boolean collideWith(GameObject other){
         return getBounds().overlaps(other.getBounds());
     }
 }
