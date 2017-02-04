@@ -160,14 +160,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				if(m.collideWith(other)){
 					m.integrate(-1*dt);
 					other.integrate(-1*dt);
-					m.subtractHealth(1);
-					other.subtractHealth(1);
+					m.subtractHealth(other.getDamage());
+					other.subtractHealth(m.getDamage());
 				}
 			}
 			for(Tower tower : enemyTowers){
 				if(m.collideWith(tower) && tower.isAlive()){
 					m.integrate(-1*dt);
-					tower.subtractHealth(1);
+					tower.subtractHealth(m.getDamage());
 				}
 			}
 		}
@@ -180,7 +180,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			for(Tower tower : towers){
 				if(m.collideWith(tower) && tower.isAlive()){
 					m.integrate(-1*dt);
-					tower.subtractHealth(1);
+					tower.subtractHealth(m.getDamage());
 				}
 			}
 		}

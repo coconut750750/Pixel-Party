@@ -18,6 +18,7 @@ class Titan extends Minion {
     private final static int velY = 10;
     private final static int range = 60;
     private final static int manaCost = 2;
+    private final static int damage = 10;
 
     Titan(Vector2 pos, Color color, boolean owned, int level) {
         super(pos,
@@ -28,7 +29,8 @@ class Titan extends Minion {
                 name,
                 level,
                 (int)(field.height/range),
-                manaCost);
+                manaCost,
+                damage);
     }
 
     /**
