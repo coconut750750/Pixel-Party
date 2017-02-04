@@ -17,9 +17,18 @@ class Titan extends Minion {
     private final static String name = "Titan";
     private final static int velY = 10;
     private final static int range = 60;
+    private final static int manaCost = 2;
 
     Titan(Vector2 pos, Color color, boolean owned, int level) {
-        super(pos, (int)(field.height/width), (int)(field.height/height), color, owned, name, level, (int)(field.height/range));
+        super(pos,
+                (int)(field.height/width),
+                (int)(field.height/height),
+                color,
+                owned,
+                name,
+                level,
+                (int)(field.height/range),
+                manaCost);
     }
 
     /**

@@ -70,7 +70,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		fieldBot = field.y;
 		fieldTop = field.y+field.height;
 
-		verticalBuffer = (int)(field.height/7f);
+		verticalBuffer = (int)(field.height/6f);
 		initCards();
 		initBluetooth();
 
@@ -199,6 +199,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				}
 			}
 		}
+
+		mana.update(dt);
 	}
 
 	private void draw(){
@@ -338,6 +340,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		y = Math.min(y, (int)((field.height-verticalBuffer)/2+verticalBuffer));
 		int midLane = (int)((lane+0.5)*laneInterval);
 		Minion t = new Titan(new Vector2(midLane, y), color, true, 1);
+
+		int cost = t.getCost();
+		if (mana.getCount() < cost){
+			return;
+		} else {
+			mana.subtractCount(cost);
+		}
+		
 		minions.add(t);
 
 		cards.remove(cardSelected);

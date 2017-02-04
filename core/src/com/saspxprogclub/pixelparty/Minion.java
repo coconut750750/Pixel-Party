@@ -20,6 +20,7 @@ class Minion extends GameObject {
     private int level;
     private int range;
     private boolean isMoving;
+    private int cost;
 
     /**
      * constructor
@@ -32,7 +33,7 @@ class Minion extends GameObject {
      * @param level level of minion, determines damage reduction (armor)
      * @param range range of the minion
      */
-    Minion(Vector2 pos, int width, int height, Color color, boolean owned, String name, int level, int range) {
+    Minion(Vector2 pos, int width, int height, Color color, boolean owned, String name, int level, int range, int cost) {
         super(width, height+range);
         setPosition(pos);
         this.color = color;
@@ -43,6 +44,7 @@ class Minion extends GameObject {
         this.level = level;
         this.range = range;
         this.isMoving = false;
+        this.cost = cost;
     }
 
     /**
@@ -108,6 +110,10 @@ class Minion extends GameObject {
      */
     int getLevel(){
         return this.level;
+    }
+
+    public int getCost() {
+        return cost;
     }
 
     /**
