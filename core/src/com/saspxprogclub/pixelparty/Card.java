@@ -19,6 +19,7 @@ class Card {
     private int start;
     private int x;
     private int y;
+    private int buffer;
     private Color color;
     private Color borderColor;
     private int borderWidth;
@@ -51,7 +52,8 @@ class Card {
         this.pos = pos;
         this.x = cardStart+width*pos+margin*(pos+1);
         this.start = cardStart+width*pos+margin*(pos+1);
-        this.y = y+margin;
+        this.buffer = y;
+        this.y = buffer+margin;
 
         this.color = color;
         this.borderColor = Color.BLACK;
@@ -143,17 +145,14 @@ class Card {
      * @param selected boolean true if card is selected
      */
     void setSelected(boolean selected){
-        if(this.selected == selected){
-            return;
-        }
         this.selected = selected;
         if (selected){
             this.borderWidth = Card.borderWidth1 * 2;
-            this.y += height/10;
+            this.y = margin + buffer + height/10;
             this.setBorderColor(Color.WHITE);
         } else {
             this.borderWidth = Card.borderWidth1;
-            this.y -= height/10;
+            this.y = margin + buffer;
             this.setBorderColor(Color.BLACK);
             this.x = start;
         }

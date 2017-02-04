@@ -343,11 +343,13 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		int cost = t.getCost();
 		if (mana.getCount() < cost){
+			Card c = cards.get(cardSelected);
+			c.setSelected(false);
 			return;
 		} else {
 			mana.subtractCount(cost);
 		}
-		
+
 		minions.add(t);
 
 		cards.remove(cardSelected);
