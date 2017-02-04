@@ -3,8 +3,6 @@ package com.saspxprogclub.pixelparty;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
-import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
-
 /***
  * Created by Brandon on 1/25/17.
  */

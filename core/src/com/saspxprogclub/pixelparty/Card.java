@@ -47,11 +47,11 @@ class Card {
      * @param color color of card (will change to sprite/image)
      */
 
-    Card(int pos, Color color){
+    Card(int pos, int y, Color color){
         this.pos = pos;
         this.x = cardStart+width*pos+margin*(pos+1);
         this.start = cardStart+width*pos+margin*(pos+1);
-        this.y = margin;
+        this.y = y+margin;
 
         this.color = color;
         this.borderColor = Color.BLACK;
@@ -143,14 +143,17 @@ class Card {
      * @param selected boolean true if card is selected
      */
     void setSelected(boolean selected){
+        if(this.selected == selected){
+            return;
+        }
         this.selected = selected;
         if (selected){
             this.borderWidth = Card.borderWidth1 * 2;
-            this.y = margin + height/10;
+            this.y += height/10;
             this.setBorderColor(Color.WHITE);
         } else {
             this.borderWidth = Card.borderWidth1;
-            this.y = margin;
+            this.y -= height/10;
             this.setBorderColor(Color.BLACK);
             this.x = start;
         }
