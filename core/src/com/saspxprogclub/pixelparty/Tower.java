@@ -18,16 +18,20 @@ public class Tower extends GameObject {
     private Color color;
 
     private HealthBar health;
+    private boolean alive;
 
     /**
      * constructor
-     * @param pos lane tower is in
+     * @param pos of the tower
+     * @param color of the tower
      */
     Tower(Vector2 pos, Color color) {
         super(width, height);
-        setPosition(pos);
+        Vector2 nPos = new Vector2(pos.x - width/2, pos.y - height/2);
+        setPosition(nPos);
         this.health = new HealthBar(towerHealth, color, pos);
         this.color = color;
+        alive = true;
     }
 
     public static void initTowers(int dimen){
@@ -37,7 +41,7 @@ public class Tower extends GameObject {
 
     void draw(ShapeRenderer shapeRenderer){
         shapeRenderer.setColor(color);
-        shapeRenderer.rect(getX()-getWidth()/2, getY()-getHeight()/2, getWidth(), getHeight());
+        shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
         health.draw(height, PixelPartyGame.field.height, color, shapeRenderer);
     }
 
@@ -46,9 +50,14 @@ public class Tower extends GameObject {
      */
     void subtractHealth(int damage){
         this.health.subtract(damage);
+        this.alive = this.health.getHealth() >= 0;
     }
 
     HealthBar getHealth(){
         return this.health;
+    }
+
+    boolean isAlive(){
+        return alive;
     }
 }

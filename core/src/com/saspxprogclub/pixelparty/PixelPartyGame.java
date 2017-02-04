@@ -165,7 +165,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				}
 			}
 			for(Tower tower : enemyTowers){
-				if(m.collideWith(tower)){
+				if(m.collideWith(tower) && tower.isAlive()){
 					m.integrate(-1*dt);
 					tower.subtractHealth(1);
 				}
@@ -178,7 +178,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				tempMinions.add(m);
 			}
 			for(Tower tower : towers){
-				if(m.collideWith(tower)){
+				if(m.collideWith(tower) && tower.isAlive()){
 					m.integrate(-1*dt);
 					tower.subtractHealth(1);
 				}
@@ -382,6 +382,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		if (mana.getCount() < cost){
 			Card c = cards.get(cardSelected);
 			c.setSelected(false);
+			c.setSelected(true);
 			return;
 		} else {
 			mana.subtractCount(cost);
