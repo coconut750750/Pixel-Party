@@ -17,17 +17,15 @@ import java.util.List;
 
 public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
-	//actual height and width = field.height/___
-	//this is done in the draw function
-	private int mheight = 30;
-	private int mwidth = 30;
 	public static int verticalBuffer;
-
 	public static Rectangle field = new Rectangle();
 	private ShapeRenderer shapeRenderer;
 	private float fieldTop, fieldBot, fieldLeft, fieldRight;
 	private List<Minion> minions;
 	private List<Minion> enemyMinions;
+	private List<Tower> towers;
+	private List<Tower> enemyTowers;
+
 	private List<Card> cards;
 	private List<Integer> cardsNeeded;
 	private int laneInterval;
@@ -73,6 +71,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		verticalBuffer = (int)(field.height/6f);
 		initCards();
 		initBluetooth();
+		initTowers();
 
 		shapeRenderer = new ShapeRenderer();
 
@@ -116,6 +115,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			Runnable bluetoothRun = bluetoothManager.getListener();
 			Thread messageListener = new Thread(bluetoothRun);
 			messageListener.start();
+		}
+	}
+
+	private void initTowers(){
+		Tower.initTowers(laneInterval, color);
+		for(int i = 0; i < numLanes; i++){
+			towers.add(new Tower(new Vector2((int)((i+0.5)*laneInterval), verticalBuffer+(int)(laneInterval/2f))));
+			enemyTowers.add(new Tower(new Vector2((int)((i+0.5)*laneInterval), field.height-(int)(laneInterval/2f))));
 		}
 	}
 
@@ -211,6 +218,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		drawLanes();
 		cardboard.draw(shapeRenderer);
 		drawMinions();
+		drawTowers();
 		drawCards();
 		shapeRenderer.end();
 	}
@@ -243,6 +251,16 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		}
 		spriteBatch.end();
+	}
+
+	private void drawTowers(){
+		shapeRenderer.setColor(color);
+		for(Tower t: towers){
+			t.draw(shapeRenderer);
+		}
+		for(Tower t : enemyTowers){
+			t.draw(shapeRenderer);
+		}
 	}
 
 	private void drawCards(){

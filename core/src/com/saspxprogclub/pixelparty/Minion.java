@@ -13,7 +13,7 @@ class Minion extends GameObject {
     private static final int totalHealth = 1000;
 
     private Color color;
-    private float delay;
+    private float delay = 1.0f;
     private boolean owned;
     private TextWrapper name;
     private HealthBar health;
@@ -37,7 +37,6 @@ class Minion extends GameObject {
         super(width, height+range);
         setPosition(pos);
         this.color = color;
-        this.delay = 1.0f;
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
         this.health = new HealthBar(totalHealth, color, pos);
