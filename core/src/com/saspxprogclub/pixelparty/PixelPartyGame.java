@@ -28,8 +28,6 @@ import java.util.Random;
 
 //test
 
-//test
-
 public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	public static int verticalBuffer;
