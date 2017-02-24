@@ -6,7 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -278,16 +280,18 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		temp.addAll(minions);
 		temp.addAll(enemyMinions);
 		for (Minion m : temp) {
-			shapeRenderer.setColor(m.getColor());
-			int w = (int)(m.getWidth());
+			Sprite sprite = m.getSprite();
+			sprite.draw(spriteBatch);
+			//shapeRenderer.setColor(m.getColor());
+			//int w = (int)(m.getWidth());
 			int h = (int)(m.getHeight());
-			shapeRenderer.rect(m.getX()-w/2,m.getY()-h/2,w, h);
+			//shapeRenderer.rect(m.getX()-w/2,m.getY()-h/2,w, h);
 			//TextWrapper name = m.getName();
 			//name.setPosition(new Vector2(m.getX(), m.getY()+h/2+(field.height/Minion.nameBuffer)));
 			//name.draw(spriteBatch, font);
 
 			HealthBar health = m.getHealth();
-			health.draw(h, field.height, m.getColor(), shapeRenderer);
+			health.draw(h, field.height, m.getHealth().getColor(), shapeRenderer);
 
 		}
 		spriteBatch.end();
