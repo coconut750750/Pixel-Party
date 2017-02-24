@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //ryan was here
+//james was also here
 
 public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
