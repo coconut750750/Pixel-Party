@@ -17,9 +17,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+/*ideas
+	We can alter
+	minions (ranged, melee)
+	spells(rage spells)
+	towers
+	different terrains(water,mountain,swamp) so different creatures interact differently with each terrain.
+*/
 
-//ryan was here
-//james was also here
 
 public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
