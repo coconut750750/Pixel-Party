@@ -14,6 +14,13 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
+/*ideas
+	We can alter
+	minions (ranged, melee)
+	spells(rage spells)
+	towers
+	different terrarins(water,mountain,swamp) so different creatures interact differently with each terrain.
+*/
 
 //ryan was here
 //james was also here
