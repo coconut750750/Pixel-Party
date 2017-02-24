@@ -22,9 +22,9 @@ class Minion extends GameObject {
     private final static String RANGE = "RANGE";
     private final static String MANACOST = "MANACOST";
     private final static String DAMAGE = "DAMAGE";
+    private final static String HEALTH = "HEALTH";
 
     static final int nameBuffer = 100;
-    private static final int totalHealth = 1000;
 
     private Color color;
     private float delay = 1.0f;
@@ -43,24 +43,26 @@ class Minion extends GameObject {
     public static final HashMap<String, Integer> titan = new HashMap<String, Integer>();
     static
     {
-        titan.put(WIDTH,(int)(field.y/30f));//inverse
-        titan.put(HEIGHT,(int)(field.y/30f));//inverse
-        titan.put(VELY,(int)(field.y/10f));//inverse
-        titan.put(RANGE,(int)(field.y/60f));//inverse
+        titan.put(WIDTH,(int)(field.height/30f));//inverse
+        titan.put(HEIGHT,(int)(field.height/30f));//inverse
+        titan.put(VELY,(int)(field.height/10f));//inverse
+        titan.put(RANGE,(int)(field.height/60f));//inverse
         titan.put(MANACOST,2);
         titan.put(DAMAGE,10);
+        titan.put(HEALTH, 1000);
     }
 
     //Knight
     public static final HashMap<String, Integer> knight = new HashMap<String, Integer>();
     static
     {
-        knight.put(WIDTH,(int)(field.y/30f));//inverse
-        knight.put(HEIGHT,(int)(field.y/20f));//inverse
-        knight.put(VELY,(int)(field.y/7f));//inverse
-        knight.put(RANGE,(int)(field.y/40f));//inverse
+        knight.put(WIDTH,(int)(field.height/30f));//inverse
+        knight.put(HEIGHT,(int)(field.height/20f));//inverse
+        knight.put(VELY,(int)(field.height/7f));//inverse
+        knight.put(RANGE,(int)(field.height/40f));//inverse
         knight.put(MANACOST,3);
         knight.put(DAMAGE,15);
+        knight.put(HEALTH, 800);
     }
 
     public static final HashMap<String, HashMap<String, Integer>> minions = new HashMap<String, HashMap<String, Integer>>();
@@ -84,7 +86,7 @@ class Minion extends GameObject {
         this.color = color;
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
-        this.health = new HealthBar(totalHealth, color, pos);
+        this.health = new HealthBar(type.get(HEALTH), color, pos);
         this.level = level;
         this.range = type.get(RANGE);
         this.isMoving = false;
@@ -180,7 +182,7 @@ class Minion extends GameObject {
      */
     @Override
     public float getVelocityY() {
-        return field.height/velY;
+        return velY;
     }
 
     @Override
