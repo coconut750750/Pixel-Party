@@ -3,11 +3,25 @@ package com.saspxprogclub.pixelparty;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.HashMap;
+
+import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
+
 /***
  * Created by Brandon on 1/25/17.
  */
 
 class Minion extends GameObject {
+
+    public final static String TITAN = "TITAN";
+    public final static String KNIGHT = "KNIGHT";
+
+    private final static String WIDTH = "WIDTH";
+    private final static String HEIGHT = "HEIGHT";
+    private final static String VELY = "VELY";
+    private final static String RANGE = "RANGE";
+    private final static String MANACOST = "MANACOST";
+    private final static String DAMAGE = "DAMAGE";
 
     static final int nameBuffer = 100;
     private static final int totalHealth = 1000;
@@ -22,30 +36,61 @@ class Minion extends GameObject {
     private boolean isMoving;
     private int cost;
     private int damage;
+    private int velY;
+
+    //MINIONS
+    //Titan
+    public static final HashMap<String, Integer> titan = new HashMap<String, Integer>();
+    static
+    {
+        titan.put(WIDTH,(int)(field.y/30f));//inverse
+        titan.put(HEIGHT,(int)(field.y/30f));//inverse
+        titan.put(VELY,(int)(field.y/10f));//inverse
+        titan.put(RANGE,(int)(field.y/60f));//inverse
+        titan.put(MANACOST,2);
+        titan.put(DAMAGE,10);
+    }
+
+    //Knight
+    public static final HashMap<String, Integer> knight = new HashMap<String, Integer>();
+    static
+    {
+        knight.put(WIDTH,(int)(field.y/30f));//inverse
+        knight.put(HEIGHT,(int)(field.y/20f));//inverse
+        knight.put(VELY,(int)(field.y/7f));//inverse
+        knight.put(RANGE,(int)(field.y/40f));//inverse
+        knight.put(MANACOST,3);
+        knight.put(DAMAGE,15);
+    }
+
+    public static final HashMap<String, HashMap<String, Integer>> minions = new HashMap<String, HashMap<String, Integer>>();
+    static
+    {
+        minions.put(TITAN, titan);
+        minions.put(KNIGHT, knight);
+    }
 
     /**
      * constructor
      * @param pos position of the minion
-     * @param width width of the minion
-     * @param height height of the minion (width and height are both final constants in each minion class)
      * @param color color of minion (will be changed later to sprite/image)
      * @param owned boolean if user owns it, or its from bluetooth transmission
      * @param name name of the minion, final constant in each minion class
      * @param level level of minion, determines damage reduction (armor)
-     * @param range range of the minion
      */
-    Minion(Vector2 pos, int width, int height, Color color, boolean owned, String name, int level, int range, int cost, int damage) {
-        super(width, height+range);
+    Minion(HashMap<String, Integer> type, String name, Vector2 pos, Color color, boolean owned, int level) {
+        super(type.get(WIDTH), type.get(HEIGHT)+type.get(RANGE));
         setPosition(pos);
         this.color = color;
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
         this.health = new HealthBar(totalHealth, color, pos);
         this.level = level;
-        this.range = range;
+        this.range = type.get(RANGE);
         this.isMoving = false;
-        this.cost = cost;
-        this.damage = damage;
+        this.cost = type.get(MANACOST);
+        this.damage = type.get(DAMAGE);
+        this.velY = type.get(VELY);
     }
 
     /**
@@ -127,6 +172,15 @@ class Minion extends GameObject {
      */
     void setVelocity(int direction) {
         super.setVelocity(0,direction*getVelocityY());
+    }
+
+    /**
+     * overrides GameObject method
+     * @return final velocity of this minion
+     */
+    @Override
+    public float getVelocityY() {
+        return field.height/velY;
     }
 
     @Override

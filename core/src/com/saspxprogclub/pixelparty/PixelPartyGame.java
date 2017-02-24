@@ -13,7 +13,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 //ryan was here
 //james was also here
@@ -48,12 +51,13 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private float currentRegen;
 	private BitmapFont font;
 	private SpriteBatch spriteBatch;
+	private List<String> availiable = new ArrayList<String>();
 
 	public PixelPartyGame(BluetoothManager bluetoothManager, Color color){
 		this.isSingle = color == Color.BLACK;
 		if (this.isSingle){
 			this.bluetoothManager = null;
-			this.color = Color.WHITE;
+			this.color = Color.BLACK;
 		} else {
 			this.bluetoothManager = bluetoothManager;
 			this.color = color;
@@ -90,6 +94,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	private void initCards(){
 
+		availiable = Arrays.asList(Minion.TITAN, Minion.KNIGHT);
+
 		int cardboardWidth = (int)(fieldRight/4*3);
 		cardMargin = cardboardWidth/60;
 
@@ -106,7 +112,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		Card.initCards(cardWidth,(int)(verticalBuffer-2*cardMargin-cardY), (int)cardboard.getX(), cardMargin, cardBorderWidth);
 
 		for (int i = 0; i < 4; i++){
-			cards.add(new Card(i, (int)cardY, Color.RED));
+			String m = availiable.get(new Random().nextInt(availiable.size()));
+			cards.add(new Card(i, (int)cardY, Color.RED, m));
 		}
 
 		currentRegen = cardRegen;
@@ -196,7 +203,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			if (currentRegen <= 0){
 				int i = cardsNeeded.get(0);
 				cardsNeeded.remove(0);
-				cards.set(i, new Card(i, (int)cardY, Color.RED));
+				String m = availiable.get(new Random().nextInt(availiable.size()));
+
+				cards.set(i, new Card(i, (int)cardY, Color.RED, m));
 				currentRegen = cardRegen;
 			}
 		}
@@ -208,6 +217,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					String[] sList = s.split(" ");
 					int lane = Integer.parseInt(sList[0]);
 					int h = Integer.parseInt(sList[2]);
+					String name = sList[3];
 					int y1 = Integer.parseInt(sList[1]);
 					float y = 1f-(float)y1/(float)h;
 					y = y*(field.height-verticalBuffer);
@@ -221,8 +231,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					} else {
 						c = Color.BLUE;
 					}
-					Titan t = new Titan(new Vector2(midLane, y), c, false, 1);
-					enemyMinions.add(t);
+					HashMap<String, Integer> data = Minion.minions.get(name);
+					Minion m = new Minion(data, name, new Vector2(midLane, y), c, false, 1);
+					enemyMinions.add(m);
 				} catch (NumberFormatException e){
 					Gdx.app.exit();
 				}
@@ -355,7 +366,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			Card c = cards.get(cardSelected);
 			if (y > verticalBuffer){
 				int lane = x/laneInterval;
-				deployMinion(lane, y);
+				deployMinion(lane, y, c);
 			} else {
 				c.setSelected(false);
 				c.setSelected(true);
@@ -376,22 +387,23 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		return true;
 	}
 
-	private void deployMinion(int lane, int y){
+	private void deployMinion(int lane, int y, Card c){
 		y = Math.min(y, (int)((field.height-verticalBuffer)/2+verticalBuffer));
 		int midLane = (int)((lane+0.5)*laneInterval);
-		Minion t = new Titan(new Vector2(midLane, y), color, true, 1);
+		HashMap<String, Integer> data = Minion.minions.get(c.getMinionName());
+		Minion m = new Minion(data, c.getMinionName(), new Vector2(midLane, y), color, true, 1);
 
-		int cost = t.getCost();
+		int cost = m.getCost();
 		if (mana.getCount() < cost){
-			Card c = cards.get(cardSelected);
-			c.setSelected(false);
-			c.setSelected(true);
+			Card c1 = cards.get(cardSelected);
+			c1.setSelected(false);
+			c1.setSelected(true);
 			return;
 		} else {
 			mana.subtractCount(cost);
 		}
 
-		minions.add(t);
+		minions.add(m);
 
 		cards.remove(cardSelected);
 		cards.add(cardSelected, null);
@@ -399,7 +411,10 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardSelected = -1;
 
 		if (!isSingle){
-			bluetoothManager.send(""+lane+" "+(y-verticalBuffer)+" "+((int)field.height-verticalBuffer)+"~");
+			bluetoothManager.send(""+lane+" "+
+					(y-verticalBuffer)+" "+
+					((int)field.height-verticalBuffer)+" "+
+					c.getMinionName()+"~");
 		}
 	}
 

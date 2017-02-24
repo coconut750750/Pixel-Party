@@ -25,6 +25,7 @@ class Card {
     private int borderWidth;
     private boolean selected;
     private Rectangle bounds = new Rectangle();
+    private String minionName;
 
     /**
      * must call this before creating any cards
@@ -48,12 +49,13 @@ class Card {
      * @param color color of card (will change to sprite/image)
      */
 
-    Card(int pos, int y, Color color){
+    Card(int pos, int y, Color color, String minionName){
         this.pos = pos;
         this.x = cardStart+width*pos+margin*(pos+1);
         this.start = cardStart+width*pos+margin*(pos+1);
         this.buffer = y;
         this.y = buffer+margin;
+        this.minionName = minionName;
 
         this.color = color;
         this.borderColor = Color.BLACK;
@@ -138,6 +140,10 @@ class Card {
      */
     boolean isSelected(){
         return selected;
+    }
+
+    String getMinionName(){
+        return minionName;
     }
 
     /**
