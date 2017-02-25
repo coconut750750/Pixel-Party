@@ -104,7 +104,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	private void initCards(){
 
-		availiable = Arrays.asList(Minion.TITAN, Minion.KNIGHT);
+		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT);
 
 		int cardboardWidth = (int)(fieldRight/4*3);
 		cardMargin = cardboardWidth/60;

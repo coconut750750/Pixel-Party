@@ -16,7 +16,7 @@ import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
 
 class Minion extends GameObject {
 
-    final static String TITAN = "titan";
+    final static String WIZARD = "wizard";
     final static String KNIGHT = "knight";
 
     private final static String WIDTH = "WIDTH";
@@ -54,17 +54,17 @@ class Minion extends GameObject {
         field.height/20f = 50px height
         field.height/10f = 100px height
      */
-    //Titan
-    public static final HashMap<String, Integer> titan = new HashMap<String, Integer>();
+    //Wizard
+    public static final HashMap<String, Integer> wizard = new HashMap<String, Integer>();
     static
     {
-        titan.put(WIDTH,(int)(field.height/30f));//inverse
-        titan.put(HEIGHT,(int)(field.height/30f));//inverse
-        titan.put(VELY,(int)(field.height/10f));//inverse
-        titan.put(RANGE,(int)(field.height/60f));//inverse
-        titan.put(MANACOST,2);
-        titan.put(DAMAGE,10);
-        titan.put(HEALTH, 1000);
+        wizard.put(WIDTH,(int)(field.height/30f));//inverse
+        wizard.put(HEIGHT,(int)(field.height/30f));//inverse
+        wizard.put(VELY,(int)(field.height/10f));//inverse
+        wizard.put(RANGE,(int)(field.height/60f));//inverse
+        wizard.put(MANACOST,2);
+        wizard.put(DAMAGE,10);
+        wizard.put(HEALTH, 1000);
     }
 
     //Knight
@@ -83,7 +83,7 @@ class Minion extends GameObject {
     public static final HashMap<String, HashMap<String, Integer>> minions = new HashMap<String, HashMap<String, Integer>>();
     static
     {
-        minions.put(TITAN, titan);
+        minions.put(WIZARD, wizard);
         minions.put(KNIGHT, knight);
     }
 
@@ -110,13 +110,11 @@ class Minion extends GameObject {
 
         Sprite sprite;
         if(owned){
-            //sprite = new Sprite(new Texture(Gdx.files.internal(name+"_back.png")));
-            sprite = new Sprite(new Texture(Gdx.files.internal("knight_back.png")));
+            sprite = new Sprite(new Texture(Gdx.files.internal(name+"_back.png")));
         } else {
-            //sprite = new Sprite(new Texture(Gdx.files.internal(name+"_front.png")));
-            sprite = new Sprite(new Texture(Gdx.files.internal("knight_back.png")));
+            sprite = new Sprite(new Texture(Gdx.files.internal(name+"_front.png")));
         }
-        sprite.scale(type.get(HEIGHT)/sprite.getHeight());
+        sprite.scale(field.height/1000f);
         this.sprite = sprite;
     }
 
