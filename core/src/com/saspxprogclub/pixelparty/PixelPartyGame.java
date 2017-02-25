@@ -23,6 +23,12 @@ import java.util.Random;
 	spells(rage spells)
 	towers
 	different terrains(water,mountain,swamp) so different creatures interact differently with each terrain.
+        
+        We should add a lot of modularity to this, in other words, potentially
+        allow users to create their own spells, etc? Configurability. 
+        --Ethan 
+
+
 */
 
 
