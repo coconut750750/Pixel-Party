@@ -1,7 +1,11 @@
 package com.saspxprogclub.pixelparty;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
 
 /***
  * Created by Brandon on 1/29/17.
@@ -26,6 +30,7 @@ class Card {
     private boolean selected;
     private Rectangle bounds = new Rectangle();
     private String minionName;
+    private Sprite sprite;
 
     /**
      * must call this before creating any cards
@@ -63,6 +68,11 @@ class Card {
         this.selected = false;
         bounds.setWidth(width);
         bounds.setHeight(height);
+
+        this.sprite = new Sprite(new Texture(Gdx.files.internal(minionName+"_front.png")));
+
+        sprite.scale(field.height/1000);
+        sprite.setCenter(this.x+width/2,this.y+height/2);
     }
 
     /**
@@ -104,6 +114,7 @@ class Card {
     void move(int x, int y){
         this.x = x;
         this.y = y;
+        sprite.setCenter((int)(x+getBounds().width/2), (int)(y+getBounds().height/2));
     }
 
     /**
@@ -154,13 +165,19 @@ class Card {
         this.selected = selected;
         if (selected){
             this.borderWidth = Card.borderWidth1 * 2;
-            this.y = margin + buffer + height/10;
+            move(getX(), margin + buffer + height/10);
             this.setBorderColor(Color.WHITE);
         } else {
             this.borderWidth = Card.borderWidth1;
-            this.y = margin + buffer;
+            move(start, margin+buffer);
             this.setBorderColor(Color.BLACK);
-            this.x = start;
         }
+    }
+
+    /**
+     * @return sprite of card
+     */
+    Sprite getSprite(){
+        return sprite;
     }
 }

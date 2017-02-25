@@ -1,6 +1,9 @@
 package com.saspxprogclub.pixelparty;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
@@ -13,8 +16,8 @@ import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
 
 class Minion extends GameObject {
 
-    public final static String TITAN = "TITAN";
-    public final static String KNIGHT = "KNIGHT";
+    final static String WIZARD = "wizard";
+    final static String KNIGHT = "knight";
 
     private final static String WIDTH = "WIDTH";
     private final static String HEIGHT = "HEIGHT";
@@ -24,9 +27,9 @@ class Minion extends GameObject {
     private final static String DAMAGE = "DAMAGE";
     private final static String HEALTH = "HEALTH";
 
-    static final int nameBuffer = 100;
+    static final int nameBuffer = 70;
 
-    private Color color;
+    private Sprite sprite;
     private float delay = 1.0f;
     private boolean owned;
     private TextWrapper name;
@@ -39,17 +42,29 @@ class Minion extends GameObject {
     private int velY;
 
     //MINIONS
-    //Titan
-    public static final HashMap<String, Integer> titan = new HashMap<String, Integer>();
+    /*sprite info
+        field.height/100f = 10px height
+        field.height/90f = 11px height
+        field.height/80f = 13px height
+        field.height/70f = 14px height
+        field.height/60f = 17px height
+        field.height/50f = 20px height
+        field.height/40f = 25px height
+        field.height/30f = 33px height
+        field.height/20f = 50px height
+        field.height/10f = 100px height
+     */
+    //Wizard
+    public static final HashMap<String, Integer> wizard = new HashMap<String, Integer>();
     static
     {
-        titan.put(WIDTH,(int)(field.height/30f));//inverse
-        titan.put(HEIGHT,(int)(field.height/30f));//inverse
-        titan.put(VELY,(int)(field.height/10f));//inverse
-        titan.put(RANGE,(int)(field.height/60f));//inverse
-        titan.put(MANACOST,2);
-        titan.put(DAMAGE,10);
-        titan.put(HEALTH, 1000);
+        wizard.put(WIDTH,(int)(field.height/30f));//inverse
+        wizard.put(HEIGHT,(int)(field.height/30f));//inverse
+        wizard.put(VELY,(int)(field.height/10f));//inverse
+        wizard.put(RANGE,(int)(field.height/60f));//inverse
+        wizard.put(MANACOST,2);
+        wizard.put(DAMAGE,10);
+        wizard.put(HEALTH, 1000);
     }
 
     //Knight
@@ -68,14 +83,14 @@ class Minion extends GameObject {
     public static final HashMap<String, HashMap<String, Integer>> minions = new HashMap<String, HashMap<String, Integer>>();
     static
     {
-        minions.put(TITAN, titan);
+        minions.put(WIZARD, wizard);
         minions.put(KNIGHT, knight);
     }
 
     /**
      * constructor
      * @param pos position of the minion
-     * @param color color of minion (will be changed later to sprite/image)
+     * @param color color of health bar
      * @param owned boolean if user owns it, or its from bluetooth transmission
      * @param name name of the minion, final constant in each minion class
      * @param level level of minion, determines damage reduction (armor)
@@ -83,7 +98,6 @@ class Minion extends GameObject {
     Minion(HashMap<String, Integer> type, String name, Vector2 pos, Color color, boolean owned, int level) {
         super(type.get(WIDTH), type.get(HEIGHT)+type.get(RANGE));
         setPosition(pos);
-        this.color = color;
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
         this.health = new HealthBar(type.get(HEALTH), color, pos);
@@ -93,13 +107,22 @@ class Minion extends GameObject {
         this.cost = type.get(MANACOST);
         this.damage = type.get(DAMAGE);
         this.velY = type.get(VELY);
+
+        Sprite sprite;
+        if(owned){
+            sprite = new Sprite(new Texture(Gdx.files.internal(name+"_back.png")));
+        } else {
+            sprite = new Sprite(new Texture(Gdx.files.internal(name+"_front.png")));
+        }
+        sprite.scale(field.height/1000f);
+        this.sprite = sprite;
     }
 
     /**
      * @return returns color (will change to return sprite/image)
      */
-    public Color getColor(){
-        return color;
+    public Sprite getSprite(){
+        return sprite;
     }
 
     /**
@@ -212,6 +235,7 @@ class Minion extends GameObject {
         }
         integrate(dt);
         updateBounds();
+        sprite.setCenter(getX(), getY());
 
         return (bottom() <= fieldHeight &&
                 top() >= PixelPartyGame.verticalBuffer+getHeight() &&

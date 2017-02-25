@@ -6,7 +6,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -31,8 +34,6 @@ import java.util.Random;
 
 */
 
-
-//test
 
 //test
 
@@ -109,7 +110,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	private void initCards(){
 
-		availiable = Arrays.asList(Minion.TITAN, Minion.KNIGHT);
+		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT);
 
 		int cardboardWidth = (int)(fieldRight/4*3);
 		cardMargin = cardboardWidth/60;
@@ -254,7 +255,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 				}
 			}
 		}
-
 		mana.update(dt);
 	}
 
@@ -264,13 +264,20 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		drawLanes();
-		cardboard.draw(shapeRenderer);
-		drawMinions();
 		drawTowers();
-		drawCards();
+		cardboard.draw(shapeRenderer);
+
+		drawMinions(true);
+
+		drawCards(true);
 		shapeRenderer.end();
+		spriteBatch.begin();
+		drawMinions(false);
+		drawCards(false);
+		spriteBatch.end();
 	}
 
+	//all shape renderer
 	private void drawLanes(){
 		shapeRenderer.setColor(Color.WHITE);
 		int width = (int)(fieldRight/100);
@@ -280,25 +287,19 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		shapeRenderer.rect(0,verticalBuffer,fieldRight, width);
 	}
 
-	private void drawMinions(){
-		spriteBatch.begin();
+	private void drawMinions(boolean shape){
 		List<Minion> temp = new ArrayList<Minion>();
 		temp.addAll(minions);
 		temp.addAll(enemyMinions);
 		for (Minion m : temp) {
-			shapeRenderer.setColor(m.getColor());
-			int w = (int)(m.getWidth());
-			int h = (int)(m.getHeight());
-			shapeRenderer.rect(m.getX()-w/2,m.getY()-h/2,w, h);
-			//TextWrapper name = m.getName();
-			//name.setPosition(new Vector2(m.getX(), m.getY()+h/2+(field.height/Minion.nameBuffer)));
-			//name.draw(spriteBatch, font);
-
-			HealthBar health = m.getHealth();
-			health.draw(h, field.height, m.getColor(), shapeRenderer);
-
+			if(shape) {
+				int h = (int)(m.getHeight());
+				HealthBar health = m.getHealth();
+				health.draw(h, field.height, m.getHealth().getColor(), shapeRenderer);
+			} else {
+				m.getSprite().draw(spriteBatch);
+			}
 		}
-		spriteBatch.end();
 	}
 
 	private void drawTowers(){
@@ -311,18 +312,22 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		}
 	}
 
-	private void drawCards(){
+	private void drawCards(boolean shape){
 		for(Card c : cards){
 			if(c == null){
 				continue;
 			}
-			//draw border
-			shapeRenderer.setColor(c.getBorderColor());
-			shapeRenderer.rect(c.getX(), c.getY(), Card.width, Card.height);
-			//draw card
-			int borderWidth = c.getBorderWidth();
-			shapeRenderer.setColor(c.getColor());
-			shapeRenderer.rect(c.getX()+borderWidth, c.getY()+borderWidth, Card.width-2*borderWidth, Card.height-2*borderWidth);
+			if(shape) {
+				//draw border
+				shapeRenderer.setColor(c.getBorderColor());
+				shapeRenderer.rect(c.getX(), c.getY(), Card.width, Card.height);
+				//draw card
+				int borderWidth = c.getBorderWidth();
+				shapeRenderer.setColor(c.getColor());
+				shapeRenderer.rect(c.getX() + borderWidth, c.getY() + borderWidth, Card.width - 2 * borderWidth, Card.height - 2 * borderWidth);
+			} else {
+				c.getSprite().draw(spriteBatch);
+			}
 		}
 	}
 
