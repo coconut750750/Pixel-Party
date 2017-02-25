@@ -110,11 +110,9 @@ class Minion extends GameObject {
 
         Sprite sprite;
         if(owned){
-            //sprite = new Sprite(new Texture(Gdx.files.internal(name+"_back.png")));
-            sprite = new Sprite(new Texture(Gdx.files.internal("wizard_back.png")));
+            sprite = new Sprite(new Texture(Gdx.files.internal(name+"_back.png")));
         } else {
-            //sprite = new Sprite(new Texture(Gdx.files.internal(name+"_front.png")));
-            sprite = new Sprite(new Texture(Gdx.files.internal("wizard_back.png")));
+            sprite = new Sprite(new Texture(Gdx.files.internal(name+"_front.png")));
         }
         sprite.scale(field.height/1000f);
         this.sprite = sprite;

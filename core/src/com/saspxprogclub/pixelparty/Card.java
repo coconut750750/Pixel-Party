@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
 
 /***
  * Created by Brandon on 1/29/17.
@@ -68,11 +69,9 @@ class Card {
         bounds.setWidth(width);
         bounds.setHeight(height);
 
-        this.sprite = new Sprite(new Texture(Gdx.files.internal("knight_front.png")));
-        int scaleH = (int)(height/sprite.getHeight());
-        int scaleW = (int)(width/sprite.getWidth());
-        int scale = Math.min(scaleH, scaleW);
-        sprite.scale(scale);
+        this.sprite = new Sprite(new Texture(Gdx.files.internal(minionName+"_front.png")));
+
+        sprite.scale(field.height/1000);
         sprite.setCenter(this.x+width/2,this.y+height/2);
     }
 

@@ -95,7 +95,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 		minions = new ArrayList<Minion>();
 		enemyMinions = new ArrayList<Minion>();
-		
+
 		Gdx.input.setInputProcessor(this);
 		font = new BitmapFont();
 		spriteBatch = new SpriteBatch();
