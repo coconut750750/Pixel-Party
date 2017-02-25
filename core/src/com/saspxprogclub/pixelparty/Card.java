@@ -11,7 +11,7 @@ import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
  * Created by Brandon on 1/29/17.
  */
 
-class Card {
+class Card { // To Appease Brandon - Felix
 
     static int width;
     public static int height;
