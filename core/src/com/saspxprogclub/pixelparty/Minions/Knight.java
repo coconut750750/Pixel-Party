@@ -13,7 +13,7 @@ public class Knight extends Minion{
 
     private static int width = (int)(field.height/30f); //inverse
     private static int height = (int)(field.height/20f); //inverse
-    private static int vely = (int)(field.height/70f); //inverse
+    private static int vely = (int)(field.height/7f); //inverse
     private static int range = (int)(field.height/40f); //inverse
     private static int cost = 3;
     private static int damage = 15;
