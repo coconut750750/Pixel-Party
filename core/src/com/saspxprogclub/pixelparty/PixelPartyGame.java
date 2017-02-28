@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.saspxprogclub.pixelparty.Minions.Knight;
+import com.saspxprogclub.pixelparty.Minions.Wizard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,7 +112,6 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	}
 
 	private void initCards(){
-
 		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT);
 
 		int cardboardWidth = (int)(fieldRight/4*3);
@@ -248,9 +249,11 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 					} else {
 						c = Color.BLUE;
 					}
-					HashMap<String, Integer> data = Minion.minions.get(name);
-					Minion m = new Minion(data, name, new Vector2(midLane, y), c, false, 1);
-					enemyMinions.add(m);
+					Minion m = getMinion(name, new Vector2(midLane, y), c, false, 1);
+					if(!m.equals(null)){
+						enemyMinions.add(m);
+					}
+
 				} catch (NumberFormatException e){
 					Gdx.app.exit();
 				}
@@ -411,8 +414,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private void deployMinion(int lane, int y, Card c){
 		y = Math.min(y, (int)((field.height-verticalBuffer)/2+verticalBuffer));
 		int midLane = (int)((lane+0.5)*laneInterval);
-		HashMap<String, Integer> data = Minion.minions.get(c.getMinionName());
-		Minion m = new Minion(data, c.getMinionName(), new Vector2(midLane, y), color, true, 1);
+		Minion m = getMinion(c.getMinionName(), new Vector2(midLane, y), color, true, 1);
 
 		int cost = m.getCost();
 		if (mana.getCount() < cost){
@@ -447,5 +449,15 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	public Minion getMinion(String name, Vector2 pos, Color color, boolean owned, int level){
+		if(name.equals(Minion.WIZARD)){
+			return new Wizard(pos, color, owned, level);
+		} else if (name.equals(Minion.KNIGHT)){
+			return new Knight(pos, color, owned, level);
+		} else {
+			return null;
+		}
 	}
 }

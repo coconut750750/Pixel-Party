@@ -14,18 +14,10 @@ import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
  * Created by Brandon on 1/25/17.
  */
 
-class Minion extends GameObject {
+public class Minion extends GameObject {
 
     final static String WIZARD = "wizard";
     final static String KNIGHT = "knight";
-
-    private final static String WIDTH = "WIDTH";
-    private final static String HEIGHT = "HEIGHT";
-    private final static String VELY = "VELY";
-    private final static String RANGE = "RANGE";
-    private final static String MANACOST = "MANACOST";
-    private final static String DAMAGE = "DAMAGE";
-    private final static String HEALTH = "HEALTH";
 
     static final int nameBuffer = 70;
 
@@ -54,38 +46,6 @@ class Minion extends GameObject {
         field.height/20f = 50px height
         field.height/10f = 100px height
      */
-    //Wizard
-    public static final HashMap<String, Integer> wizard = new HashMap<String, Integer>();
-    static
-    {
-        wizard.put(WIDTH,(int)(field.height/30f));//inverse
-        wizard.put(HEIGHT,(int)(field.height/30f));//inverse
-        wizard.put(VELY,(int)(field.height/10f));//inverse
-        wizard.put(RANGE,(int)(field.height/60f));//inverse
-        wizard.put(MANACOST,2);
-        wizard.put(DAMAGE,10);
-        wizard.put(HEALTH, 1000);
-    }
-
-    //Knight
-    public static final HashMap<String, Integer> knight = new HashMap<String, Integer>();
-    static
-    {
-        knight.put(WIDTH,(int)(field.height/30f));//inverse
-        knight.put(HEIGHT,(int)(field.height/20f));//inverse
-        knight.put(VELY,(int)(field.height/7f));//inverse
-        knight.put(RANGE,(int)(field.height/40f));//inverse
-        knight.put(MANACOST,3);
-        knight.put(DAMAGE,15);
-        knight.put(HEALTH, 800);
-    }
-
-    public static final HashMap<String, HashMap<String, Integer>> minions = new HashMap<String, HashMap<String, Integer>>();
-    static
-    {
-        minions.put(WIZARD, wizard);
-        minions.put(KNIGHT, knight);
-    }
 
     /**
      * constructor
@@ -95,18 +55,18 @@ class Minion extends GameObject {
      * @param name name of the minion, final constant in each minion class
      * @param level level of minion, determines damage reduction (armor)
      */
-    Minion(HashMap<String, Integer> type, String name, Vector2 pos, Color color, boolean owned, int level) {
-        super(type.get(WIDTH), type.get(HEIGHT)+type.get(RANGE));
+    public Minion(int width, int height, int vely, int range, int cost, int damage, int health, String name, Vector2 pos, Color color, boolean owned, int level) {
+        super(width, height+range);
         setPosition(pos);
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
-        this.health = new HealthBar(type.get(HEALTH), color, pos);
+        this.health = new HealthBar(health, color, pos);
         this.level = level;
-        this.range = type.get(RANGE);
+        this.range = range;
         this.isMoving = false;
-        this.cost = type.get(MANACOST);
-        this.damage = type.get(DAMAGE);
-        this.velY = type.get(VELY);
+        this.cost = cost;
+        this.damage = damage;
+        this.velY = vely;
 
         Sprite sprite;
         if(owned){
