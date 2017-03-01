@@ -18,6 +18,7 @@ public class Minion extends GameObject {
 
     final static String WIZARD = "wizard";
     final static String KNIGHT = "knight";
+    final static String MERFOLK = "merfolk";
 
     static final int nameBuffer = 70;
 
@@ -69,6 +70,7 @@ public class Minion extends GameObject {
         this.name = new TextWrapper(name, pos);
         this.health = new HealthBar(health, color, pos);
         this.level = level;
+        
         this.range = range;
         this.isMoving = false;
         this.cost = cost;
