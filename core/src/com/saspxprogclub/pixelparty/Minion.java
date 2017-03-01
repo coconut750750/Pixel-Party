@@ -49,6 +49,13 @@ public class Minion extends GameObject {
 
     /**
      * constructor
+     * @param width these are given
+     * @param height
+     * @param vely
+     * @param range
+     * @param cost
+     * @param damage
+     * @param health
      * @param pos position of the minion
      * @param color color of health bar
      * @param owned boolean if user owns it, or its from bluetooth transmission
