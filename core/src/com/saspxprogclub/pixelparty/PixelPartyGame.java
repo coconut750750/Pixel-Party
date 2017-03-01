@@ -51,7 +51,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private List<Card> cards;
 	private List<Integer> cardsNeeded;
 	private int laneInterval;
-	private final int numLanes = 5;
+	private final int numLanes = 4;
 	private Cardboard cardboard;
 	private Mana mana;
 	private final int startMana = 5;
