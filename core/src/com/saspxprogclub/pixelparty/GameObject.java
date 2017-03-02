@@ -12,17 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 abstract class GameObject {
     private Vector2 position = new Vector2();
     private Vector2 velocity = new Vector2();
-    public Shape2D bounds;
-
-    /**
-     * constructor
-     * @param width of the object
-     * @param height of the object
-     */
-    /*GameObject(int width, int height){
-        bounds.setWidth(width);
-        bounds.setHeight(height);
-    }*/
+    Shape2D bounds;
 
     /**
      * @return object of the bounds
@@ -32,40 +22,25 @@ abstract class GameObject {
         return bounds;
     }
 
-    abstract void setBounds(float x, float y);
-
     /**
      * sets the bounds of the object
      */
-
-    /*{
-        bounds.set(x, y, width, height);
-    }*/
+    abstract void setBounds(float x, float y);
 
     /**
      * updates bounds if object was moved
      */
     abstract void updateBounds();
-    /*{
-        bounds.setX(getX());
-        bounds.setY(getY());
-    }*/
 
     /**
      * @return height of object
      */
     abstract float getHeight();
-    /*{
-        return bounds.height;
-    }*/
 
     /**
      * @return width of object
      */
     abstract float getWidth();
-    /*{
-        return bounds.width;
-    }*/
 
     public void setPosition(Vector2 position) {
         this.position = position;
@@ -122,22 +97,4 @@ abstract class GameObject {
     abstract public float right();
 
     abstract float top();
-
-    /**
-     * float bottom(){
-     return bounds.y;
-     }
-
-     public float left(){
-     return bounds.x;
-     }
-
-     public float right(){
-     return bounds.x+bounds.width;
-     }
-
-     float top(){
-     return bounds.y+getHeight();
-     }
-     */
 }
