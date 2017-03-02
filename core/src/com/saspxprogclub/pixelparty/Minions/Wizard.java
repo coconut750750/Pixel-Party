@@ -14,7 +14,7 @@ public class Wizard extends Minion {
     private static int width = (int)(field.height/30f); //inverse
     private static int height = (int)(field.height/30f); //inverse
     private static int vely = (int)(field.height/10f); //inverse
-    private static int range = (int)(field.height/60f); //inverse
+    private static int range = (int)(field.height/30f); //inverse
     private static int cost = 2;
     private static int damage = 10;
     private static int health = 1000;
