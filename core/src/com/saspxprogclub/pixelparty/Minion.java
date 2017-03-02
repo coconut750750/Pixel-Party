@@ -75,6 +75,12 @@ public abstract class Minion extends GameObject {
         ((Rectangle)bounds).setWidth(width);
         ((Rectangle)bounds).setHeight(height+range);
 
+        if(owned) {
+            pos = new Vector2(pos.x, pos.y + height / 2);
+        }
+        else {
+            pos = new Vector2(pos.x, pos.y - height / 2);
+        }
         setPosition(pos);
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
@@ -234,10 +240,11 @@ public abstract class Minion extends GameObject {
     @Override
     void updateBounds() {
         if (owned){
-            setBounds(getX()-getWidth()/2, getY()+range-getHeight()/2);
-        } else {
             setBounds(getX()-getWidth()/2, getY()-getHeight()/2);
+        } else {
+            setBounds(getX()-getWidth()/2, getY()-range-getHeight()/2);
         }
+
     }
 
     boolean update(float dt, float fieldHeight){
@@ -258,8 +265,11 @@ public abstract class Minion extends GameObject {
         isBlocked = false;
         sprite.setCenter(getX(), getY());
 
+        boolean inBottomBounds = ((owned && (top() >= PixelPartyGame.verticalBuffer+getHeight())) ||
+                                    (!owned && (top() >= PixelPartyGame.verticalBuffer)));
+
         return (bottom() <= fieldHeight &&
-                top() >= PixelPartyGame.verticalBuffer+getHeight() &&
+                inBottomBounds &&
                 getHealth().getHealth() > 0);
     }
 
