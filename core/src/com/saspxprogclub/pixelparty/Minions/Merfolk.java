@@ -18,7 +18,7 @@ public class Merfolk extends Minion{
     private static int cost = 2;
     private static int damage = 20;
     private static int health = 300;
-    private final static String name = "merfolk";
+    private final static String name = Minion.MERFOLK;
 
 
     public Merfolk(Vector2 pos, Color color, boolean owned, int level) {

@@ -13,7 +13,7 @@ public class Tank extends Minion{
   private static int cost = 5;
   private static int damage = 20;
   private static int health = 1000;
-  private final static String name = "tank";
+  private final static String name = Minion.TANK;
 
   /**
    * constructor

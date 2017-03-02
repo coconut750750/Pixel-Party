@@ -2,6 +2,8 @@ package com.saspxprogclub.pixelparty;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 
 /***
@@ -26,7 +28,9 @@ public class Tower extends GameObject {
      * @param color of the tower
      */
     Tower(Vector2 pos, Color color) {
-        super(width, height);
+        bounds = new Rectangle();
+        ((Rectangle)bounds).setWidth(width);
+        ((Rectangle)bounds).setHeight(height);
         Vector2 nPos = new Vector2(pos.x - width/2, pos.y - height/2);
         setPosition(nPos);
         this.health = new HealthBar(towerHealth, color, pos);
@@ -59,5 +63,47 @@ public class Tower extends GameObject {
 
     boolean isAlive(){
         return alive;
+    }
+
+
+    @Override
+    void setBounds(float x, float y) {
+        ((Rectangle)bounds).set(x, y, width, height);
+    }
+
+    @Override
+    void updateBounds() {
+        ((Rectangle)bounds).setX(getX());
+        ((Rectangle)bounds).setY(getY());
+    }
+
+    @Override
+    float getHeight() {
+        return ((Rectangle)bounds).getHeight();
+    }
+
+    @Override
+    float getWidth() {
+        return ((Rectangle)bounds).width;
+    }
+
+    @Override
+    float bottom(){
+        return ((Rectangle)bounds).y;
+    }
+
+    @Override
+    public float left(){
+        return ((Rectangle)bounds).x;
+    }
+
+    @Override
+    public float right(){
+        return ((Rectangle)bounds).x+((Rectangle)bounds).width;
+    }
+
+    @Override
+    float top(){
+        return ((Rectangle)bounds).y+getHeight();
     }
 }
