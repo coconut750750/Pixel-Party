@@ -14,11 +14,12 @@ import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
  * Created by Brandon on 1/25/17.
  */
 
-public class Minion extends GameObject {
+public abstract class Minion extends GameObject {
 
-    final static String WIZARD = "wizard";
-    final static String KNIGHT = "knight";
-    final static String MERFOLK = "merfolk";
+    protected final static String WIZARD = "wizard";
+    protected final static String KNIGHT = "knight";
+    protected final static String MERFOLK = "merfolk";
+    protected final static String TANK = "tank";
 
     static final int nameBuffer = 70;
 
@@ -35,6 +36,8 @@ public class Minion extends GameObject {
     private int velY;
 
     //MINIONS
+    //Create new minion class in Minions package
+    //add the name in this class
     /*sprite info
         field.height/100f = 10px height
         field.height/90f = 11px height

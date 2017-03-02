@@ -18,7 +18,7 @@ public class Wizard extends Minion {
     private static int cost = 2;
     private static int damage = 10;
     private static int health = 1000;
-    private final static String name = "wizard";
+    private final static String name = Minion.WIZARD;
 
     /**
      * constructor
