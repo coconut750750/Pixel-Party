@@ -36,6 +36,8 @@ public abstract class Minion extends GameObject {
     private int cost;
     private int damage;
     private int velY;
+    private boolean isAlive;
+    private boolean isBlocked;
 
     //MINIONS
     //Create new minion class in Minions package
@@ -93,6 +95,8 @@ public abstract class Minion extends GameObject {
         }
         sprite.scale(field.height/1000f);
         this.sprite = sprite;
+        this.isAlive = true;
+        this.isBlocked = false;
     }
 
     @Override
@@ -171,6 +175,9 @@ public abstract class Minion extends GameObject {
      */
     void subtractHealth(int damage){
         this.health.subtract(damage);
+        if(this.health.getHealth() <= 0){
+            this.isAlive = false;
+        }
     }
 
     /**
@@ -206,8 +213,13 @@ public abstract class Minion extends GameObject {
      * sets velocity of minion
      * @param direction of minion
      */
-    void setVelocity(int direction) {
-        super.setVelocity(0,direction*getVelocityY());
+    private void setVelocity(int direction) {
+        this.velY = (int)(direction*getVelocityY());
+        super.setVelocity(0,velY);
+    }
+
+    void resetVelocity(){
+        super.setVelocity(0, getVelocityY());
     }
 
     /**
@@ -239,8 +251,11 @@ public abstract class Minion extends GameObject {
         } else {
             subtractDelay(dt);
         }
-        integrate(dt);
-        updateBounds();
+        if(!isBlocked) {
+            integrate(dt);
+            updateBounds();
+        }
+        isBlocked = false;
         sprite.setCenter(getX(), getY());
 
         return (bottom() <= fieldHeight &&
@@ -249,6 +264,25 @@ public abstract class Minion extends GameObject {
     }
 
     boolean collideWith(GameObject other){
-        return ((Rectangle)getBounds()).overlaps((Rectangle)other.getBounds());
+        boolean collided = ((Rectangle)getBounds()).overlaps((Rectangle)other.getBounds());
+        try{
+            ((Minion)other).setBlocked(((Minion)other).isBlocked() || collided);
+            isBlocked = isBlocked || collided;
+        } catch (java.lang.ClassCastException e){
+            isBlocked = isBlocked || (collided && ((Tower)other).isAlive());
+        }
+        return collided;
+    }
+
+    boolean isAlive(){
+        return isAlive;
+    }
+
+    boolean isBlocked(){
+        return isBlocked;
+    }
+
+    void setBlocked(boolean isBlocked){
+        this.isBlocked = isBlocked;
     }
 }

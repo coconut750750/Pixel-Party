@@ -183,15 +183,14 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 			for(Minion other : enemyMinions){
 				if(m.collideWith(other)){
-					m.integrate(-1*dt);
-					other.integrate(-1*dt);
+
 					m.subtractHealth(other.getDamage());
 					other.subtractHealth(m.getDamage());
 				}
 			}
 			for(Tower tower : enemyTowers){
 				if(m.collideWith(tower) && tower.isAlive()){
-					m.integrate(-1*dt);
+					//m.integrate(-1*dt);
 					tower.subtractHealth(m.getDamage());
 				}
 			}
