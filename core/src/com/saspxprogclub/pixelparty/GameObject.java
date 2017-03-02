@@ -1,6 +1,7 @@
 package com.saspxprogclub.pixelparty;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 
 
@@ -8,57 +9,63 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Brandon on 1/25/17.
  */
 
-class GameObject {
+abstract class GameObject {
     private Vector2 position = new Vector2();
     private Vector2 velocity = new Vector2();
-    private Rectangle bounds = new Rectangle();
+    public Shape2D bounds;
 
     /**
      * constructor
-     * @param width of the object (minions, maybe towers later)
+     * @param width of the object
      * @param height of the object
      */
-    GameObject(int width, int height){
+    /*GameObject(int width, int height){
         bounds.setWidth(width);
         bounds.setHeight(height);
-    }
+    }*/
 
     /**
-     * @return rectangle object of the bounds
+     * @return object of the bounds
      */
-    public Rectangle getBounds() {
+    Shape2D getBounds(){
         updateBounds();
         return bounds;
     }
 
+    abstract void setBounds(float x, float y);
+
     /**
      * sets the bounds of the object
      */
-    public void setBounds(float x, float y, float width, float height){
+
+    /*{
         bounds.set(x, y, width, height);
-    }
+    }*/
 
     /**
      * updates bounds if object was moved
      */
-    void updateBounds(){
+    abstract void updateBounds();
+    /*{
         bounds.setX(getX());
         bounds.setY(getY());
-    }
+    }*/
 
     /**
      * @return height of object
      */
-    public float getHeight(){
+    abstract float getHeight();
+    /*{
         return bounds.height;
-    }
+    }*/
 
     /**
      * @return width of object
      */
-    float getWidth(){
+    abstract float getWidth();
+    /*{
         return bounds.width;
-    }
+    }*/
 
     public void setPosition(Vector2 position) {
         this.position = position;
@@ -108,19 +115,29 @@ class GameObject {
         position.add(velocity.x*dt, velocity.y*dt);
     }
 
-    float bottom(){
-        return bounds.y;
-    }
+    abstract float bottom();
 
-    public float left(){
-        return bounds.x;
-    }
+    abstract public float left();
 
-    public float right(){
-        return bounds.x+bounds.width;
-    }
+    abstract public float right();
 
-    float top(){
-        return bounds.y+getHeight();
-    }
+    abstract float top();
+
+    /**
+     * float bottom(){
+     return bounds.y;
+     }
+
+     public float left(){
+     return bounds.x;
+     }
+
+     public float right(){
+     return bounds.x+bounds.width;
+     }
+
+     float top(){
+     return bounds.y+getHeight();
+     }
+     */
 }

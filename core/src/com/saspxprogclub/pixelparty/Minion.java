@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
@@ -38,7 +40,7 @@ public abstract class Minion extends GameObject {
     //MINIONS
     //Create new minion class in Minions package
     //add the name in this class
-    /*sprite info
+    /**sprite info
         field.height/100f = 10px height
         field.height/90f = 11px height
         field.height/80f = 13px height
@@ -49,7 +51,7 @@ public abstract class Minion extends GameObject {
         field.height/30f = 33px height
         field.height/20f = 50px height
         field.height/10f = 100px height
-     */
+     **/
 
     /**
      * constructor
@@ -60,7 +62,10 @@ public abstract class Minion extends GameObject {
      * @param level level of minion, determines damage reduction (armor)
      */
     public Minion(int width, int height, int vely, int range, int cost, int damage, int health, String name, Vector2 pos, Color color, boolean owned, int level) {
-        super(width, height+range);
+        bounds = new Rectangle();
+        ((Rectangle)bounds).setWidth(width);
+        ((Rectangle)bounds).setHeight(height+range);
+
         setPosition(pos);
         this.owned = owned;
         this.name = new TextWrapper(name, pos);
@@ -81,6 +86,40 @@ public abstract class Minion extends GameObject {
         }
         sprite.scale(field.height/1000f);
         this.sprite = sprite;
+    }
+
+    @Override
+    void setBounds(float x, float y) {
+        ((Rectangle)bounds).set(x, y, getWidth(), getHeight()+range);
+    }
+    @Override
+    float getWidth() {
+        return ((Rectangle)bounds).width;
+    }
+
+    @Override
+    public float getHeight() {
+        return ((Rectangle)bounds).getHeight()-range;
+    }
+
+    @Override
+    float bottom(){
+        return ((Rectangle)bounds).y;
+    }
+
+    @Override
+    public float left(){
+        return ((Rectangle)bounds).x;
+    }
+
+    @Override
+    public float right(){
+        return ((Rectangle)bounds).x+((Rectangle)bounds).width;
+    }
+
+    @Override
+    float top(){
+        return ((Rectangle)bounds).y+getHeight();
     }
 
     /**
@@ -174,16 +213,11 @@ public abstract class Minion extends GameObject {
     }
 
     @Override
-    public float getHeight() {
-        return super.getHeight()-range;
-    }
-
-    @Override
     void updateBounds() {
         if (owned){
-            setBounds(getX()-getWidth()/2, getY()+range-getHeight()/2, getWidth(), getHeight()+range);
+            setBounds(getX()-getWidth()/2, getY()+range-getHeight()/2);
         } else {
-            setBounds(getX()-getWidth()/2, getY()-getHeight()/2, getWidth(), getHeight()+range);
+            setBounds(getX()-getWidth()/2, getY()-getHeight()/2);
         }
     }
 
@@ -208,6 +242,6 @@ public abstract class Minion extends GameObject {
     }
 
     boolean collideWith(GameObject other){
-        return getBounds().overlaps(other.getBounds());
+        return ((Rectangle)getBounds()).overlaps((Rectangle)other.getBounds());
     }
 }
