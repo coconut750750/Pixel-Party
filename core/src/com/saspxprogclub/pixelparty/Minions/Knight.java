@@ -16,8 +16,8 @@ public class Knight extends Minion{
     private static int vely = (int)(field.height/7f); //inverse
     private static int range = (int)(field.height/30f); //inverse
     private static int cost = 3;
-    private static int damage = 15;
-    private static int health = 800;
+    private static int damage = 8;
+    private static int health = 1000;
     private final static String name = Minion.KNIGHT;
 
     /**
