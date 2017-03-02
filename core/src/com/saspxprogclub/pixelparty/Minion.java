@@ -260,7 +260,7 @@ public abstract class Minion extends GameObject {
 
         return (bottom() <= fieldHeight &&
                 top() >= PixelPartyGame.verticalBuffer+getHeight() &&
-                getHealth().getHealth() >= 0);
+                getHealth().getHealth() > 0);
     }
 
     boolean collideWith(GameObject other){
