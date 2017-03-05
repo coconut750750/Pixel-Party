@@ -313,11 +313,9 @@ public abstract class Minion extends GameObject {
     boolean collideWith(GameObject other){
         boolean collided = rangeBounds.overlaps((Rectangle)other.getBounds());
         try{
-            ((Minion)other).setBlocked(((Minion)other).isBlocked() || collided);
-            isBlocked = isBlocked || collided;
-        } catch (java.lang.ClassCastException e){
             isBlocked = isBlocked || (collided && ((Tower)other).isAlive());
-
+        } catch (java.lang.ClassCastException e){
+            isBlocked = isBlocked || collided;
         }
 
         if (collided){
