@@ -13,8 +13,9 @@ public class Knight extends Minion{
 
     private static int width = (int)(field.height/30f); //inverse
     private static int height = (int)(field.height/20f); //inverse
-    private static int vely = (int)(field.height/7f); //inverse
-    private static int velyFast = (int)(field.height/5f); //inverse
+    private static int vely = (int)(field.height/8f); //inverse
+    private static int velyFast = (int)(field.height/3f); //inverse
+    private static float rDelay = 3f;
     private float runningDelay;
     private static int range = (int)(field.height/30f); //inverse
     private static int cost = 3;
@@ -33,7 +34,7 @@ public class Knight extends Minion{
     public Knight(Vector2 pos, Color color, boolean owned, int level) {
         super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
         isRunning = false;
-        runningDelay = 2f;
+        runningDelay = rDelay;
     }
 
     public void mUpdate(float dt) {
@@ -45,7 +46,7 @@ public class Knight extends Minion{
     }
 
     public void mCollide(){
-        runningDelay = 2f;
+        runningDelay = rDelay;
     }
 
 }
