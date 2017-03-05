@@ -20,8 +20,8 @@ public class Knight extends Minion{
     private float runningDelay;
     private static int range = (int)(field.height/30f); //inverse
     private static int cost = 3;
-    private static int damage = 8;
-    private static int damageFast = 16;
+    private static int damage = 200;
+    private static int damageFast = 400;
     private static int health = 1000;
     private final static String name = Minion.KNIGHT;
 
