@@ -226,6 +226,7 @@ public abstract class Minion extends GameObject {
 
     public void setVelocityY(int vely){
         this.velY = vely;
+        super.setVelocity(0,this.velY);
     }
 
     void resetVelocity(){
