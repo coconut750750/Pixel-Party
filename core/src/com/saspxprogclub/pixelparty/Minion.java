@@ -39,6 +39,10 @@ public abstract class Minion extends GameObject {
     private boolean isAlive;
     private boolean isBlocked;
 
+    private float damageTimeBuffer = 1f;
+
+    private Rectangle rangeBounds;
+
     //MINIONS
     //Create new minion class in Minions package
     //add the name in this class
@@ -73,7 +77,7 @@ public abstract class Minion extends GameObject {
     public Minion(int width, int height, int vely, int range, int cost, int damage, int health, String name, Vector2 pos, Color color, boolean owned, int level) {
         bounds = new Rectangle();
         ((Rectangle)bounds).setWidth(width);
-        ((Rectangle)bounds).setHeight(height+range);
+        ((Rectangle)bounds).setHeight(height);
 
         if(owned) {
             pos = new Vector2(pos.x, pos.y + height / 2);
@@ -88,6 +92,10 @@ public abstract class Minion extends GameObject {
         this.level = level;
         
         this.range = range;
+        rangeBounds = new Rectangle();
+        rangeBounds.setWidth(width);
+        rangeBounds.setHeight(height+range);
+
         this.isMoving = false;
         this.cost = cost;
         this.damage = damage;
@@ -107,7 +115,8 @@ public abstract class Minion extends GameObject {
 
     @Override
     void setBounds(float x, float y) {
-        ((Rectangle)bounds).set(x, y, getWidth(), getHeight()+range);
+        ((Rectangle)bounds).set(x, y, getWidth(), getHeight());
+        rangeBounds.set(x, y, getWidth(), getHeight()+range);
     }
     @Override
     float getWidth() {
@@ -116,7 +125,7 @@ public abstract class Minion extends GameObject {
 
     @Override
     public float getHeight() {
-        return ((Rectangle)bounds).getHeight()-range;
+        return ((Rectangle)bounds).getHeight();
     }
 
     @Override
@@ -179,10 +188,14 @@ public abstract class Minion extends GameObject {
      * @param damage int to be subtracted from total health
      *               TODO: make a level damage buffer (armor)
      */
-    void subtractHealth(int damage){
-        this.health.subtract(damage);
-        if(this.health.getHealth() <= 0){
-            this.isAlive = false;
+    void subtractHealth(int damage, float dt){
+        damageTimeBuffer -= dt;
+        if(damageTimeBuffer <= 0){
+            damageTimeBuffer = 1f;
+            this.health.subtract(damage);
+            if(this.health.getHealth() <= 0){
+                this.isAlive = false;
+            }
         }
     }
 
@@ -215,6 +228,10 @@ public abstract class Minion extends GameObject {
         return damage;
     }
 
+    public void setDamage(int damage){
+        this.damage = damage;
+    }
+
     /**
      * sets velocity of minion
      * @param direction of minion
@@ -222,6 +239,16 @@ public abstract class Minion extends GameObject {
     private void setVelocity(int direction) {
         this.velY = (int)(direction*getVelocityY());
         super.setVelocity(0,velY);
+}
+
+    public void setVelocityY(int vely){
+        this.velY = vely;
+        if (owned){
+            super.setVelocity(0,this.velY);
+        } else {
+            super.setVelocity(0,-1*this.velY);
+        }
+
     }
 
     void resetVelocity(){
@@ -247,6 +274,8 @@ public abstract class Minion extends GameObject {
 
     }
 
+    abstract public void mUpdate(float dt);
+
     boolean update(float dt, float fieldHeight){
         if (!isMoving() && getDelay() <= 0){
             setMoving(true);
@@ -268,18 +297,31 @@ public abstract class Minion extends GameObject {
         boolean inBottomBounds = ((owned && (top() >= PixelPartyGame.verticalBuffer+getHeight())) ||
                                     (!owned && (top() >= PixelPartyGame.verticalBuffer)));
 
+        if (isMoving()){
+            mUpdate(dt);
+        }
+        Gdx.app.log("runningDelay",""+velY);
+
+
         return (bottom() <= fieldHeight &&
                 inBottomBounds &&
                 getHealth().getHealth() > 0);
     }
 
+    abstract public void mCollide();
+
     boolean collideWith(GameObject other){
-        boolean collided = ((Rectangle)getBounds()).overlaps((Rectangle)other.getBounds());
+        boolean collided = rangeBounds.overlaps((Rectangle)other.getBounds());
         try{
             ((Minion)other).setBlocked(((Minion)other).isBlocked() || collided);
             isBlocked = isBlocked || collided;
         } catch (java.lang.ClassCastException e){
             isBlocked = isBlocked || (collided && ((Tower)other).isAlive());
+
+        }
+
+        if (collided){
+            mCollide();
         }
         return collided;
     }

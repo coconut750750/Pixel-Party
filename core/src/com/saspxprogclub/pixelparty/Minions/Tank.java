@@ -25,4 +25,9 @@ public class Tank extends Minion{
   public Tank(Vector2 pos, Color color, boolean owned, int level) {
       super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
   }
+  public void mUpdate(float dt) {
+  }
+  public void mCollide(){
+
+  }
 }

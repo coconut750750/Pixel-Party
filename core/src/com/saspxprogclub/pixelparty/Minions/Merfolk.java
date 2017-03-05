@@ -16,13 +16,19 @@ public class Merfolk extends Minion{
     private static int vely = (int)(field.height/7f); //inverse
     private static int range = (int)(field.height/30f); //inverse
     private static int cost = 3;
-    private static int damage = 15;
+    private static int damage = 500;
     private static int health = 500;
     private final static String name = Minion.MERFOLK;
 
 
     public Merfolk(Vector2 pos, Color color, boolean owned, int level) {
         super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
+    }
+
+    public void mUpdate(float dt) {
+    }
+    public void mCollide(){
+
     }
 
 }

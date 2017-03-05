@@ -13,10 +13,10 @@ public class Wizard extends Minion {
 
     private static int width = (int)(field.height/30f); //inverse
     private static int height = (int)(field.height/30f); //inverse
-    private static int vely = (int)(field.height/10f); //inverse
+    private static int vely = (int)(field.height/20f); //inverse
     private static int range = (int)(field.height/30f); //inverse
     private static int cost = 2;
-    private static int damage = 10;
+    private static int damage = 250;
     private static int health = 600;
     private final static String name = Minion.WIZARD;
 
@@ -29,6 +29,11 @@ public class Wizard extends Minion {
      */
     public Wizard(Vector2 pos, Color color, boolean owned, int level) {
         super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
+    }
+    public void mUpdate(float dt) {
+    }
+    public void mCollide(){
+
     }
 
 }
