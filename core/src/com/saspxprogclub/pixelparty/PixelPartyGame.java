@@ -30,6 +30,7 @@ import java.util.Random;
         allow users to create their own spells, etc? Configurability. 
         --Ethan
         Nice one ethan. good idea
+        test
 
 
 */
