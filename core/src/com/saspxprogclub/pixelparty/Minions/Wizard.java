@@ -30,5 +30,10 @@ public class Wizard extends Minion {
     public Wizard(Vector2 pos, Color color, boolean owned, int level) {
         super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
     }
+    public void mUpdate(float dt) {
+    }
+    public void mCollide(){
+
+    }
 
 }
