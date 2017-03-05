@@ -226,7 +226,12 @@ public abstract class Minion extends GameObject {
 
     public void setVelocityY(int vely){
         this.velY = vely;
-        super.setVelocity(0,this.velY);
+        if (owned){
+            super.setVelocity(0,-1*this.velY);
+        } else {
+            super.setVelocity(0,this.velY);
+        }
+
     }
 
     void resetVelocity(){
