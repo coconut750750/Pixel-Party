@@ -39,6 +39,8 @@ public abstract class Minion extends GameObject {
     private boolean isAlive;
     private boolean isBlocked;
 
+    private float damageTimeBuffer = 1f;
+
     //MINIONS
     //Create new minion class in Minions package
     //add the name in this class
@@ -179,10 +181,14 @@ public abstract class Minion extends GameObject {
      * @param damage int to be subtracted from total health
      *               TODO: make a level damage buffer (armor)
      */
-    void subtractHealth(int damage){
-        this.health.subtract(damage);
-        if(this.health.getHealth() <= 0){
-            this.isAlive = false;
+    void subtractHealth(int damage, float dt){
+        damageTimeBuffer -= dt;
+        if(damageTimeBuffer <= 0){
+            damageTimeBuffer = 1f;
+            this.health.subtract(damage);
+            if(this.health.getHealth() <= 0){
+                this.isAlive = false;
+            }
         }
     }
 
@@ -213,6 +219,10 @@ public abstract class Minion extends GameObject {
 
     int getDamage(){
         return damage;
+    }
+
+    public void setDamage(int damage){
+        this.damage = damage;
     }
 
     /**

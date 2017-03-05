@@ -183,13 +183,13 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 			for(Minion other : enemyMinions){
 				if(m.collideWith(other)){
-					m.subtractHealth(other.getDamage());
-					other.subtractHealth(m.getDamage());
+					m.subtractHealth(other.getDamage(), dt);
+					other.subtractHealth(m.getDamage(), dt);
 				}
 			}
 			for(Tower tower : enemyTowers){
 				if(m.collideWith(tower) && tower.isAlive()){
-					tower.subtractHealth(m.getDamage());
+					tower.subtractHealth(m.getDamage(), dt);
 				}
 			}
 		}
@@ -201,7 +201,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 			for(Tower tower : towers){
 				if(m.collideWith(tower) && tower.isAlive()){
-					tower.subtractHealth(m.getDamage());
+					tower.subtractHealth(m.getDamage(), dt);
 				}
 			}
 		}

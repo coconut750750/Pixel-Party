@@ -22,6 +22,8 @@ public class Tower extends GameObject {
     private HealthBar health;
     private boolean alive;
 
+    private float damageTimeBuffer = 1f;
+
     /**
      * constructor
      * @param pos of the tower
@@ -52,9 +54,15 @@ public class Tower extends GameObject {
     /**
      * @param damage int to be subtracted from total health
      */
-    void subtractHealth(int damage){
-        this.health.subtract(damage);
-        this.alive = this.health.getHealth() >= 0;
+    void subtractHealth(int damage, float dt){
+        damageTimeBuffer -= dt;
+        if(damageTimeBuffer <= 0){
+            damageTimeBuffer = 1f;
+            this.health.subtract(damage);
+            this.health.subtract(damage);
+            this.alive = this.health.getHealth() >= 0;
+        }
+
     }
 
     HealthBar getHealth(){

@@ -21,6 +21,7 @@ public class Knight extends Minion{
     private static int range = (int)(field.height/30f); //inverse
     private static int cost = 3;
     private static int damage = 8;
+    private static int damageFast = 16;
     private static int health = 1000;
     private final static String name = Minion.KNIGHT;
 
@@ -41,8 +42,10 @@ public class Knight extends Minion{
 
         if(runningDelay<=0){
             super.setVelocityY(velyFast);
+            super.setDamage(damageFast);
         } else {
             super.setVelocityY(vely);
+            super.setDamage(damage);
         }
     }
 
