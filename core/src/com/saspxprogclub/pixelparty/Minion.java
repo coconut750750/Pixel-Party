@@ -116,7 +116,11 @@ public abstract class Minion extends GameObject {
     @Override
     void setBounds(float x, float y) {
         ((Rectangle)bounds).set(x, y, getWidth(), getHeight());
-        rangeBounds.set(x, y, getWidth(), getHeight()+range);
+        if(owned){
+            rangeBounds.set(x, y, getWidth(), getHeight()+range);
+        } else {
+            rangeBounds.set(x, y - range, getWidth(), getHeight()+range);
+        }
     }
     @Override
     float getWidth() {
@@ -271,7 +275,6 @@ public abstract class Minion extends GameObject {
         } else {
             setBounds(getX()-getWidth()/2, getY()-range-getHeight()/2);
         }
-
     }
 
     abstract public void mUpdate(float dt);
