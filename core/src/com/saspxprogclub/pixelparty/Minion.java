@@ -247,6 +247,8 @@ public abstract class Minion extends GameObject {
 
     }
 
+    abstract public void mUpdate();
+
     boolean update(float dt, float fieldHeight){
         if (!isMoving() && getDelay() <= 0){
             setMoving(true);
@@ -267,6 +269,8 @@ public abstract class Minion extends GameObject {
 
         boolean inBottomBounds = ((owned && (top() >= PixelPartyGame.verticalBuffer+getHeight())) ||
                                     (!owned && (top() >= PixelPartyGame.verticalBuffer)));
+
+        mUpdate();
 
         return (bottom() <= fieldHeight &&
                 inBottomBounds &&
