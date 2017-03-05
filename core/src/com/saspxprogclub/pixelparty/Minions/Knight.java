@@ -14,11 +14,15 @@ public class Knight extends Minion{
     private static int width = (int)(field.height/30f); //inverse
     private static int height = (int)(field.height/20f); //inverse
     private static int vely = (int)(field.height/7f); //inverse
+    private static int velyFast = (int)(field.height/5f); //inverse
     private static int range = (int)(field.height/30f); //inverse
     private static int cost = 3;
     private static int damage = 8;
     private static int health = 1000;
     private final static String name = Minion.KNIGHT;
+    private boolean isRunning = true;
+
+
 
     /**
      * constructor
@@ -29,5 +33,11 @@ public class Knight extends Minion{
      */
     public Knight(Vector2 pos, Color color, boolean owned, int level) {
         super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
+    }
+
+    public void mUpdate() {
+        if(isRunning){
+
+        }
     }
 }
