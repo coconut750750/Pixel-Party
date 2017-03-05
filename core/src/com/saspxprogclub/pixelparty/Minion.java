@@ -300,12 +300,10 @@ public abstract class Minion extends GameObject {
         if (isMoving()){
             mUpdate(dt);
         }
-        Gdx.app.log("runningDelay",""+velY);
-
 
         return (bottom() <= fieldHeight &&
                 inBottomBounds &&
-                getHealth().getHealth() > 0);
+                isAlive());
     }
 
     abstract public void mCollide();
