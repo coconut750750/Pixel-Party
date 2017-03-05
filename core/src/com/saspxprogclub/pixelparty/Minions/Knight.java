@@ -18,7 +18,7 @@ public class Knight extends Minion{
     private static int velyFast = (int)(field.height/4f); //inverse
     private static float rDelay = 2f;
     private float runningDelay;
-    private static int range = (int)(field.height/30f); //inverse
+    private static int range = (int)(field.height/60f); //inverse
     private static int cost = 3;
     private static int damage = 200;
     private static int damageFast = 400;
