@@ -222,7 +222,7 @@ public abstract class Minion extends GameObject {
     private void setVelocity(int direction) {
         this.velY = (int)(direction*getVelocityY());
         super.setVelocity(0,velY);
-    }
+}
 
     public void setVelocityY(int vely){
         this.velY = vely;
@@ -275,7 +275,11 @@ public abstract class Minion extends GameObject {
         boolean inBottomBounds = ((owned && (top() >= PixelPartyGame.verticalBuffer+getHeight())) ||
                                     (!owned && (top() >= PixelPartyGame.verticalBuffer)));
 
-        mUpdate(dt);
+        if (isMoving()){
+            mUpdate(dt);
+        }
+        Gdx.app.log("runningDelay",""+velY);
+
 
         return (bottom() <= fieldHeight &&
                 inBottomBounds &&
@@ -291,10 +295,12 @@ public abstract class Minion extends GameObject {
             isBlocked = isBlocked || collided;
         } catch (java.lang.ClassCastException e){
             isBlocked = isBlocked || (collided && ((Tower)other).isAlive());
+
         }
 
-        mCollide();
-
+        if (collided){
+            mCollide();
+        }
         return collided;
     }
 
