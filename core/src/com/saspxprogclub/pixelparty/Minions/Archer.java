@@ -36,3 +36,16 @@ public class Archer extends Minion{
 
     }
 }
+
+/**sprite info
+ field.height/100f = 10px height
+ field.height/90f = 11px height
+ field.height/80f = 13px height
+ field.height/70f = 14px height
+ field.height/60f = 17px height
+ field.height/50f = 20px height
+ field.height/40f = 25px height
+ field.height/30f = 33px height
+ field.height/20f = 50px height
+ field.height/10f = 100px height
+ **/
