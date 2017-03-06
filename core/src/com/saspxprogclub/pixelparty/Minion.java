@@ -101,7 +101,7 @@ public abstract class Minion extends GameObject {
         this.cost = cost;
         this.damage = damage;
         this.attackSpeed = attackSpeed;
-        currentAttackTime = attackSpeed;
+        currentAttackTime = 0;
 
         this.velY = vely;
 
@@ -229,7 +229,6 @@ public abstract class Minion extends GameObject {
     }
 
     int getDamage(float dt){
-
         currentAttackTime -= dt;
         if(currentAttackTime <= 0){
             currentAttackTime = attackSpeed;

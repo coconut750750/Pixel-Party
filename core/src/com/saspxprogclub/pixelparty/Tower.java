@@ -54,7 +54,7 @@ public class Tower extends GameObject {
      */
     void subtractHealth(int damage){
         this.health.subtract(damage);
-        this.alive = this.health.getHealth() >= 0;
+        this.alive = this.health.getHealth() > 0;
 
     }
 
