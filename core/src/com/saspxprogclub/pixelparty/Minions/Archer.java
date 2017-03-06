@@ -18,11 +18,12 @@ public class Archer extends Minion{
     private static int range = (int)(field.height/20f); //inverse
     private static int cost = 4;
     private static int damage = 30;
+    private static float attackSpeed = 2f;
     private static int health = 400;
     private final static String name = "archer";
 
     public Archer(Vector2 pos, Color color, boolean owned, int level) {
-        super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
+        super(width, height, vely, range, cost, damage, attackSpeed, health, name, pos, color, owned, level);
     }
 
     @Override

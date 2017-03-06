@@ -12,6 +12,7 @@ public class Tank extends Minion{
   private static int range = (int)(field.height/40f); //inverse
   private static int cost = 5;
   private static int damage = 20;
+  private static float attackSpeed = 5f;
   private static int health = 1000;
   private final static String name = Minion.TANK;
 
@@ -23,7 +24,7 @@ public class Tank extends Minion{
    * @param level level of minion, determines damage reduction (armor)
    */
   public Tank(Vector2 pos, Color color, boolean owned, int level) {
-      super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
+      super(width, height, vely, range, cost, damage, attackSpeed, health, name, pos, color, owned, level);
   }
   public void mUpdate(float dt) {
   }

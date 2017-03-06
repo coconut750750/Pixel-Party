@@ -17,6 +17,7 @@ public class Wizard extends Minion {
     private static int range = (int)(field.height/20f); //inverse ryan did dis
     private static int cost = 2;
     private static int damage = 250;
+    private static float attackSpeed = 5f;
     private static int health = 600;
     private final static String name = Minion.WIZARD;
 
@@ -28,7 +29,7 @@ public class Wizard extends Minion {
      * @param level level of minion, determines damage reduction (armor)
      */
     public Wizard(Vector2 pos, Color color, boolean owned, int level) {
-        super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
+        super(width, height, vely, range, cost, damage, attackSpeed, health, name, pos, color, owned, level);
     }
     public void mUpdate(float dt) {
     }
