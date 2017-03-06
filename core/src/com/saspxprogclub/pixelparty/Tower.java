@@ -59,7 +59,6 @@ public class Tower extends GameObject {
         if(damageTimeBuffer <= 0){
             damageTimeBuffer = 1f;
             this.health.subtract(damage);
-            this.health.subtract(damage);
             this.alive = this.health.getHealth() >= 0;
         }
 
