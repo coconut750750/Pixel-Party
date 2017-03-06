@@ -39,7 +39,8 @@ public abstract class Minion extends GameObject {
     private boolean isAlive;
     private boolean isBlocked;
 
-    private float damageTimeBuffer = 1f;
+    private float attackSpeed;
+    private float currentAttackTime;
 
     private Rectangle rangeBounds;
 
@@ -74,7 +75,7 @@ public abstract class Minion extends GameObject {
      * @param name name of the minion, final constant in each minion class
      * @param level level of minion, determines damage reduction (armor)
      */
-    public Minion(int width, int height, int vely, int range, int cost, int damage, int health, String name, Vector2 pos, Color color, boolean owned, int level) {
+    public Minion(int width, int height, int vely, int range, int cost, int damage, float attackSpeed, int health, String name, Vector2 pos, Color color, boolean owned, int level) {
         bounds = new Rectangle();
         ((Rectangle)bounds).setWidth(width);
         ((Rectangle)bounds).setHeight(height);
@@ -99,6 +100,9 @@ public abstract class Minion extends GameObject {
         this.isMoving = false;
         this.cost = cost;
         this.damage = damage;
+        this.attackSpeed = attackSpeed;
+        currentAttackTime = attackSpeed;
+
         this.velY = vely;
 
         Sprite sprite;
@@ -192,14 +196,10 @@ public abstract class Minion extends GameObject {
      * @param damage int to be subtracted from total health
      *               TODO: make a level damage buffer (armor)
      */
-    void subtractHealth(int damage, float dt){
-        damageTimeBuffer -= dt;
-        if(damageTimeBuffer <= 0){
-            damageTimeBuffer = 1f;
-            this.health.subtract(damage);
-            if(this.health.getHealth() <= 0){
-                this.isAlive = false;
-            }
+    void subtractHealth(int damage){
+        this.health.subtract(damage);
+        if(this.health.getHealth() <= 0){
+            this.isAlive = false;
         }
     }
 
@@ -228,8 +228,15 @@ public abstract class Minion extends GameObject {
         return cost;
     }
 
-    int getDamage(){
-        return damage;
+    int getDamage(float dt){
+
+        currentAttackTime -= dt;
+        if(currentAttackTime <= 0){
+            currentAttackTime = attackSpeed;
+            return damage;
+        } else {
+            return 0;
+        }
     }
 
     public void setDamage(int damage){

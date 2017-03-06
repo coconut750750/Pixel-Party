@@ -22,6 +22,7 @@ public class Knight extends Minion{
     private static int cost = 3;
     private static int damage = 200;
     private static int damageFast = 400;
+    private static float attackSpeed = 1f;
     private static int health = 1000;
     private final static String name = Minion.KNIGHT;
 
@@ -33,7 +34,7 @@ public class Knight extends Minion{
      * @param level level of minion, determines damage reduction (armor)
      */
     public Knight(Vector2 pos, Color color, boolean owned, int level) {
-        super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
+        super(width, height, vely, range, cost, damage, attackSpeed, health, name, pos, color, owned, level);
         runningDelay = rDelay;
     }
 
