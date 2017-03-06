@@ -6,7 +6,7 @@ import com.saspxprogclub.pixelparty.Minion;
 
 import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
 
-/**
+/***
  * Created by James on 3/1/17.
  */
 
@@ -23,5 +23,15 @@ public class Archer extends Minion{
 
     public Archer(Vector2 pos, Color color, boolean owned, int level) {
         super(width, height, vely, range, cost, damage, health, name, pos, color, owned, level);
+    }
+
+    @Override
+    public void mUpdate(float dt) {
+
+    }
+
+    @Override
+    public void mCollide() {
+
     }
 }
