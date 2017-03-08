@@ -11,10 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.saspxprogclub.pixelparty.Minions.Knight;
-import com.saspxprogclub.pixelparty.Minions.Merfolk;
-import com.saspxprogclub.pixelparty.Minions.Tank;
-import com.saspxprogclub.pixelparty.Minions.Wizard;
+import com.saspxprogclub.pixelparty.Minions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,7 +109,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	}
 
 	private void initCards(){
-		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT, Minion.MERFOLK, Minion.TANK);
+		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT, Minion.MERFOLK, Minion.TANK,Minion.SPIDER);
 
 		int cardboardWidth = (int)(fieldRight/4*3);
 		cardMargin = cardboardWidth/60;
@@ -458,7 +455,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			return new Merfolk(pos, color, owned, level);
 		} else if (name.equals(Minion.TANK)){
 			return new Tank(pos, color, owned, level);
-		} else
+		} else if (name.equals(Minion.SPIDER)){
+			return new Tank(pos, color, owned, level);
+		}else
 			return null;
 	}
 }

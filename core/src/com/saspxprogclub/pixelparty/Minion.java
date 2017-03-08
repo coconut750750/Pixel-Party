@@ -22,6 +22,7 @@ public abstract class Minion extends GameObject {
     protected final static String KNIGHT = "knight";
     protected final static String MERFOLK = "merfolk";
     protected final static String TANK = "tank";
+    protected final static String SPIDER = "spider";
 
     static final int nameBuffer = 70;
 
@@ -242,6 +243,9 @@ public abstract class Minion extends GameObject {
         this.damage = damage;
     }
 
+    public void setAttackSpeed(int speed){
+        this.attackSpeed = speed;
+    }
     /**
      * sets velocity of minion
      * @param direction of minion
