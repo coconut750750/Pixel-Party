@@ -15,11 +15,26 @@ public abstract class Spell extends GameObject {
      * @param height of the object
      */
     private float radius;
+    private int cost;
+    private float duration;
+    private String name;
+    private Color color;
+    private boolean owned;
+    private int level;
 
-    public Spell(int width, int height, float radius, int cost, int duration, String name, Vector2 pos, Color color, boolean owned, int level) {
+    public Spell(float radius, int cost, int duration, String name, Vector2 pos, Color color, boolean owned, int level) {
         bounds = new Circle();
         ((Circle)bounds).setRadius(radius);
         this.radius = radius;
+        this.cost = cost;
+        this.duration = (float)duration;
+        this.name = name;
+        setPosition(pos);
+        this.color = color;
+        this.owned = owned;
+        this.level = level;
+        setBounds(pos.x, pos.y);
+
     }
 
     @Override
@@ -29,7 +44,7 @@ public abstract class Spell extends GameObject {
 
     @Override
     void updateBounds() {
-
+        setBounds(getX(), getY());
     }
 
     @Override
@@ -60,5 +75,23 @@ public abstract class Spell extends GameObject {
     @Override
     float top() {
         return this.getY()+this.radius;
+    }
+
+    private void subtractDuration(float dt){
+        this.duration -= dt;
+    }
+
+    public abstract void effect(Minion minion);
+
+    public abstract void end(Minion minion);
+
+    boolean update(float dt){
+        if(duration > 0){
+            subtractDuration(dt);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

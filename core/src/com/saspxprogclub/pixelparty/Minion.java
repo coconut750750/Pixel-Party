@@ -24,6 +24,12 @@ public abstract class Minion extends GameObject {
     protected final static String TANK = "tank";
     protected final static String SPIDER = "spider";
 
+    //attributes in data
+    public final static String VELY = "vely";
+    public final static String RANGE = "range";
+    public final static String DAMAGE = "damage";
+    public final static String ATTACKSPEED = "attackspeed";
+
     static final int nameBuffer = 70;
 
     private Sprite sprite;
@@ -44,6 +50,8 @@ public abstract class Minion extends GameObject {
     private float currentAttackTime;
 
     private Rectangle rangeBounds;
+
+    private HashMap<String, Integer> data;
 
     //MINIONS
     //Create new minion class in Minions package
@@ -116,6 +124,32 @@ public abstract class Minion extends GameObject {
         this.sprite = sprite;
         this.isAlive = true;
         this.isBlocked = false;
+
+        data = new HashMap<String, Integer>();
+        initData();
+    }
+
+    private void initData(){
+        data.put(VELY, this.velY);
+        data.put(RANGE, this.range);
+        data.put(DAMAGE, this.damage);
+        data.put(ATTACKSPEED, (int)this.attackSpeed);
+    }
+
+    public HashMap<String, Integer> getData(){
+        return data;
+    }
+
+    public void changeData(String attr, int value){
+        data.remove(attr);
+        data.put(attr, value);
+    }
+
+    private void loadData(){
+        this.velY = data.get(VELY);
+        this.range = data.get(RANGE);
+        this.damage = data.get(DAMAGE);
+        this.attackSpeed = data.get(ATTACKSPEED);
     }
 
     @Override
@@ -230,7 +264,6 @@ public abstract class Minion extends GameObject {
     }
 
     int getDamage(float dt){
-        currentAttackTime -= dt;
         if(currentAttackTime <= 0){
             currentAttackTime = attackSpeed;
             return damage;
@@ -300,11 +333,15 @@ public abstract class Minion extends GameObject {
         } else {
             subtractDelay(dt);
         }
+
+        loadData();
+
         if(!isBlocked) {
             integrate(dt);
             updateBounds();
         }
         isBlocked = false;
+
         sprite.setCenter(getX(), getY());
 
         boolean inBottomBounds = ((owned && (top() >= PixelPartyGame.verticalBuffer+getHeight())) ||
@@ -313,6 +350,8 @@ public abstract class Minion extends GameObject {
         if (isMoving()){
             mUpdate(dt);
         }
+
+        currentAttackTime -= dt;
 
         return (bottom() <= fieldHeight &&
                 inBottomBounds &&

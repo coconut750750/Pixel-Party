@@ -42,11 +42,11 @@ public class Knight extends Minion{
         runningDelay -= dt;
 
         if(runningDelay<=0){
-            super.setVelocityY(velyFast);
-            super.setDamage(damageFast);
+            super.changeData(Minion.VELY, velyFast);
+            super.changeData(Minion.DAMAGE, damageFast);
         } else {
-            super.setVelocityY(vely);
-            super.setDamage(damage);
+            super.changeData(Minion.VELY, vely);
+            super.changeData(Minion.DAMAGE, damage);
         }
     }
 
