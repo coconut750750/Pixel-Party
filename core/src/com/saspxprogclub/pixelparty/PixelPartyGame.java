@@ -306,11 +306,12 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardboard.draw(shapeRenderer);
 
 		drawMinions(true);
-		drawSpells();
+
 
 		drawCards(true);
 		shapeRenderer.end();
 		spriteBatch.begin();
+		drawSpells();
 		drawMinions(false);
 		drawCards(false);
 		spriteBatch.end();
