@@ -282,12 +282,16 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			if(s.update(dt)){
 				tempSpells.add(s);
 			}
-			else {
-				continue;
-			}
+
 			for(Minion m : minions){
+				Gdx.app.log("ryan","youre a genius");
+				if(!m.isMoving()){
+					continue;
+				}
 				if(s.contains(m)){
 					s.effect(m);
+				} else {
+					s.end(m);
 				}
 			}
 		}
@@ -443,6 +447,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int y, int pointer) {
+		if(cardSelected == -1){
+			return false;
+		}
 		Card c = cards.get(cardSelected);
 		if(c.getType().equals(Card.MINION)){
 			y = Math.max(y, (int)((field.height-verticalBuffer)/2));
@@ -466,13 +473,17 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			int midLane = (int)((lane+0.5)*laneInterval);
 			Minion m = getMinion(c.getName(), new Vector2(midLane, y), color, true, 1);
 			cost = m.getCost();
-			enoughMana(c, cost);
+			if(!enoughMana(c, cost)){
+				//return;
+			}
 			minions.add(m);
 
 		} else {
 			Spell s = getSpell(c.getName(), new Vector2(x, y), color, true, 1);
 			cost = s.getCost();
-			enoughMana(c, cost);
+			if(!enoughMana(c, cost)){
+				//return;
+			}
 			spells.add(s);
 
 		}

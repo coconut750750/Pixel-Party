@@ -52,6 +52,7 @@ public abstract class Spell extends GameObject {
             sprite = new Sprite(new Texture(Gdx.files.internal(name+"_front.png")));
         }
         sprite.scale(field.height/1000f);
+        sprite.setCenter(pos.x, pos.y);
         this.sprite = sprite;
 
     }
@@ -124,6 +125,6 @@ public abstract class Spell extends GameObject {
 
     public boolean contains(Minion m){
         Rectangle tempBounds = new Rectangle(getX()-radius, getY()-radius, radius*2, radius*2);
-        return tempBounds.contains((Rectangle)(m.getBounds()));
+        return tempBounds.overlaps((Rectangle)(m.getBounds()));
     }
 }
