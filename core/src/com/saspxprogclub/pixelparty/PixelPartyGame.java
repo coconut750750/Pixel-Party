@@ -11,10 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.saspxprogclub.pixelparty.Minions.Knight;
-import com.saspxprogclub.pixelparty.Minions.Merfolk;
-import com.saspxprogclub.pixelparty.Minions.Tank;
-import com.saspxprogclub.pixelparty.Minions.Wizard;
+import com.saspxprogclub.pixelparty.Minions.*;
+import com.saspxprogclub.pixelparty.Spells.Rage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +46,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private float fieldTop, fieldBot, fieldLeft, fieldRight;
 	private List<Minion> minions;
 	private List<Minion> enemyMinions;
+	private List<Spell> spells;
+	private List<Spell> enemySpells;
 	private List<Tower> towers;
 	private List<Tower> enemyTowers;
 
@@ -112,7 +112,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	}
 
 	private void initCards(){
-		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT, Minion.MERFOLK, Minion.TANK);
+		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT, Minion.MERFOLK, Spell.RAGE);
 
 		int cardboardWidth = (int)(fieldRight/4*3);
 		cardMargin = cardboardWidth/60;
@@ -130,8 +130,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		Card.initCards(cardWidth,(int)(verticalBuffer-2*cardMargin-cardY), (int)cardboard.getX(), cardMargin, cardBorderWidth);
 
 		for (int i = 0; i < 4; i++){
-			String m = availiable.get(new Random().nextInt(availiable.size()));
-			cards.add(new Card(i, (int)cardY, Color.RED, m));
+			String name = availiable.get(new Random().nextInt(availiable.size()));
+			String type = cardType(name);
+			cards.add(new Card(i, (int)cardY, Color.RED, name, type));
 		}
 
 		currentRegen = cardRegen;
@@ -179,6 +180,65 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	public void resume() {}
 
 	private void update(float dt){
+		updateMinions(dt);
+		updateSpell(dt);
+
+		if (cardsNeeded.size() == 0){
+			currentRegen = cardRegen;
+		} else {
+			currentRegen -= dt;
+			if (currentRegen <= 0){
+				int i = cardsNeeded.get(0);
+				cardsNeeded.remove(0);
+				String name = availiable.get(new Random().nextInt(availiable.size()));
+				String type = cardType(name);
+				cards.set(i, new Card(i, (int)cardY, Color.RED, name, type));
+				currentRegen = cardRegen;
+			}
+		}
+
+		if (!isSingle) {
+			List<String> messages = bluetoothManager.receive();
+			for (String s : messages){
+				try{
+					String[] sList = s.split(" ");
+					int x = Integer.parseInt(sList[0]);
+					int lane = Integer.parseInt(sList[1]);
+					int h = Integer.parseInt(sList[3]);
+					String name = sList[4];
+					String type = sList[5];
+
+					int y1 = Integer.parseInt(sList[2]);
+					float y = 1f-(float)y1/(float)h;
+					y = y*(field.height-verticalBuffer);
+					y = y + verticalBuffer;
+
+					int midLane = (int)((lane+0.5)*laneInterval);
+					Color c;
+					if (color == Color.BLUE){
+						c = Color.RED;
+					} else {
+						c = Color.BLUE;
+					}
+					if(type.equals(Card.MINION)){
+						Minion m = getMinion(name, new Vector2(midLane, y), c, false, 1);
+						if(!m.equals(null)){
+							enemyMinions.add(m);
+						}
+					} else {
+						Spell spell = getSpell(name, new Vector2(x, y), c, false, 1);
+						enemySpells.add(spell);
+					}
+
+				} catch (NumberFormatException e){
+					Gdx.app.exit();
+				}
+			}
+		}
+		mana.update(dt);
+	}
+
+	private void updateMinions(float dt){
 		List<Minion> tempMinions = new ArrayList<Minion>();
 		for(Minion m : minions){
 			if(m.update(dt, field.height)){
@@ -211,53 +271,26 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			}
 		}
 		enemyMinions = tempMinions;
+	}
 
-		if (cardsNeeded.size() == 0){
-			currentRegen = cardRegen;
-		} else {
-			currentRegen -= dt;
-			if (currentRegen <= 0){
-				int i = cardsNeeded.get(0);
-				cardsNeeded.remove(0);
-				String m = availiable.get(new Random().nextInt(availiable.size()));
-
-				cards.set(i, new Card(i, (int)cardY, Color.RED, m));
-				currentRegen = cardRegen;
+	private void updateSpell(float dt){
+		List<Spell> tempSpells = new ArrayList<Spell>();
+		for(Spell s : spells){
+			if(s.update(dt)){
+				tempSpells.add(s);
 			}
-		}
-
-		if (!isSingle) {
-			List<String> messages = bluetoothManager.receive();
-			for (String s : messages){
-				try{
-					String[] sList = s.split(" ");
-					int lane = Integer.parseInt(sList[0]);
-					int h = Integer.parseInt(sList[2]);
-					String name = sList[3];
-					int y1 = Integer.parseInt(sList[1]);
-					float y = 1f-(float)y1/(float)h;
-					y = y*(field.height-verticalBuffer);
-					y = y + verticalBuffer;
-
-
-					int midLane = (int)((lane+0.5)*laneInterval);
-					Color c;
-					if (color == Color.BLUE){
-						c = Color.RED;
-					} else {
-						c = Color.BLUE;
-					}
-					Minion m = getMinion(name, new Vector2(midLane, y), c, false, 1);
-					if(!m.equals(null)){
-						enemyMinions.add(m);
-					}
-
-				} catch (NumberFormatException e){
-					Gdx.app.exit();
+			else {
+				continue;
+			}
+			for(Minion m : minions){
+				if(s.contains(m)){
+					s.effect(m);
 				}
 			}
 		}
-		mana.update(dt);
+
+
+		spells = tempSpells;
 	}
 
 	private void draw(){
@@ -270,6 +303,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardboard.draw(shapeRenderer);
 
 		drawMinions(true);
+		drawSpells();
 
 		drawCards(true);
 		shapeRenderer.end();
@@ -301,6 +335,12 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			} else {
 				m.getSprite().draw(spriteBatch);
 			}
+		}
+	}
+
+	private void drawSpells(){
+		for(Spell s : spells){
+			s.getSprite().draw(spriteBatch);
 		}
 	}
 
@@ -388,7 +428,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			Card c = cards.get(cardSelected);
 			if (y > verticalBuffer){
 				int lane = x/laneInterval;
-				deployMinion(lane, y, c);
+				deploy(lane, x, y, c);
 			} else {
 				c.setSelected(false);
 				c.setSelected(true);
@@ -399,32 +439,39 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int y, int pointer) {
-		y = Math.max(y, (int)((field.height-verticalBuffer)/2));
+		Card c = cards.get(cardSelected);
+		if(c.getType().equals(Card.MINION)){
+			y = Math.max(y, (int)((field.height-verticalBuffer)/2));
+		}
+
 		y = (int)(field.height-y);
+
 		if (cardSelected != -1){
-			Card c = cards.get(cardSelected);
 			c.move(screenX-Card.width/2, y-Card.height/2);
 		}
 
 		return true;
 	}
 
-	private void deployMinion(int lane, int y, Card c){
-		y = Math.min(y, (int)((field.height-verticalBuffer)/2+verticalBuffer));
-		int midLane = (int)((lane+0.5)*laneInterval);
-		Minion m = getMinion(c.getMinionName(), new Vector2(midLane, y), color, true, 1);
+	private void deploy(int lane, int x, int y, Card c){
+		String type = c.getType();
+		int cost;
 
-		int cost = m.getCost();
-		if (mana.getCount() < cost){
-			Card c1 = cards.get(cardSelected);
-			c1.setSelected(false);
-			c1.setSelected(true);
-			return;
+		if(type.equals(Card.MINION)){
+			y = Math.min(y, (int)((field.height-verticalBuffer)/2+verticalBuffer));
+			int midLane = (int)((lane+0.5)*laneInterval);
+			Minion m = getMinion(c.getName(), new Vector2(midLane, y), color, true, 1);
+			cost = m.getCost();
+			enoughMana(c, cost);
+			minions.add(m);
+
 		} else {
-			mana.subtractCount(cost);
-		}
+			Spell s = getSpell(c.getName(), new Vector2(x, y), color, true, 1);
+			cost = s.getCost();
+			enoughMana(c, cost);
+			spells.add(s);
 
-		minions.add(m);
+		}
 
 		cards.remove(cardSelected);
 		cards.add(cardSelected, null);
@@ -432,10 +479,22 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardSelected = -1;
 
 		if (!isSingle){
-			bluetoothManager.send(""+lane+" "+
+			bluetoothManager.send(""+x+" "+lane+" "+
 					(y-verticalBuffer)+" "+
 					((int)field.height-verticalBuffer)+" "+
-					c.getMinionName()+"~");
+					c.getName()+" "+
+					c.getType()+"~");
+		}
+	}
+
+	boolean enoughMana(Card c, int cost){
+		if (mana.getCount() < cost){
+			c.setSelected(false);
+			c.setSelected(true);
+			return false;
+		} else {
+			mana.subtractCount(cost);
+			return true;
 		}
 	}
 
@@ -458,7 +517,25 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			return new Merfolk(pos, color, owned, level);
 		} else if (name.equals(Minion.TANK)){
 			return new Tank(pos, color, owned, level);
+		} else if (name.equals(Minion.SPIDER)){
+			return new Tank(pos, color, owned, level);
 		} else
 			return null;
+	}
+
+	public Spell getSpell(String name, Vector2 pos, Color color, boolean owned, int level){
+		if(name.equals(Spell.RAGE)){
+			return new Rage(pos, color, owned, level);
+		} else {
+			return null;
+		}
+	}
+
+	String cardType(String name){
+		if(name.contains("_spell")){
+			return Card.SPELL;
+		} else {
+			return  Card.MINION;
+		}
 	}
 }
