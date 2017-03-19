@@ -9,6 +9,9 @@ import com.badlogic.gdx.math.Vector2;
  */
 
 public abstract class Spell extends GameObject {
+
+    protected final static String RAGE = "rage_spell";
+
     /**
      * constructor
      * @param width  of the object

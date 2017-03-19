@@ -109,7 +109,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	}
 
 	private void initCards(){
-		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT, Minion.MERFOLK, Minion.TANK,Minion.SPIDER);
+		availiable = Arrays.asList(Minion.WIZARD, Minion.KNIGHT, Minion.MERFOLK, Spell.RAGE);
 
 		int cardboardWidth = (int)(fieldRight/4*3);
 		cardMargin = cardboardWidth/60;
@@ -127,8 +127,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		Card.initCards(cardWidth,(int)(verticalBuffer-2*cardMargin-cardY), (int)cardboard.getX(), cardMargin, cardBorderWidth);
 
 		for (int i = 0; i < 4; i++){
-			String m = availiable.get(new Random().nextInt(availiable.size()));
-			cards.add(new Card(i, (int)cardY, Color.RED, m));
+			String name = availiable.get(new Random().nextInt(availiable.size()));
+			String type = cardType(name);
+			cards.add(new Card(i, (int)cardY, Color.RED, name, type));
 		}
 
 		currentRegen = cardRegen;
@@ -216,9 +217,9 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			if (currentRegen <= 0){
 				int i = cardsNeeded.get(0);
 				cardsNeeded.remove(0);
-				String m = availiable.get(new Random().nextInt(availiable.size()));
-
-				cards.set(i, new Card(i, (int)cardY, Color.RED, m));
+				String name = availiable.get(new Random().nextInt(availiable.size()));
+				String type = cardType(name);
+				cards.set(i, new Card(i, (int)cardY, Color.RED, name, type));
 				currentRegen = cardRegen;
 			}
 		}
@@ -409,7 +410,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	private void deployMinion(int lane, int y, Card c){
 		y = Math.min(y, (int)((field.height-verticalBuffer)/2+verticalBuffer));
 		int midLane = (int)((lane+0.5)*laneInterval);
-		Minion m = getMinion(c.getMinionName(), new Vector2(midLane, y), color, true, 1);
+		Minion m = getMinion(c.getName(), new Vector2(midLane, y), color, true, 1);
 
 		int cost = m.getCost();
 		if (mana.getCount() < cost){
@@ -432,7 +433,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			bluetoothManager.send(""+lane+" "+
 					(y-verticalBuffer)+" "+
 					((int)field.height-verticalBuffer)+" "+
-					c.getMinionName()+"~");
+					c.getName()+"~");
 		}
 	}
 
@@ -457,7 +458,15 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			return new Tank(pos, color, owned, level);
 		} else if (name.equals(Minion.SPIDER)){
 			return new Tank(pos, color, owned, level);
-		}else
+		} else
 			return null;
+	}
+
+	String cardType(String name){
+		if(name.contains("_spell")){
+			return Card.SPELL;
+		} else {
+			return  Card.MINION;
+		}
 	}
 }

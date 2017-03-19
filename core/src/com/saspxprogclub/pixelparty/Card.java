@@ -13,6 +13,9 @@ import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
 
 class Card { // To Appease Brandon - Felix
 
+    public final static String MINION = "minion";
+    public final static String SPELL = "spell";
+
     static int width;
     public static int height;
     private static int cardStart;
@@ -29,8 +32,9 @@ class Card { // To Appease Brandon - Felix
     private int borderWidth;
     private boolean selected;
     private Rectangle bounds = new Rectangle();
-    private String minionName;
+    private String name;
     private Sprite sprite;
+    private String type;
 
     /**
      * must call this before creating any cards
@@ -54,13 +58,14 @@ class Card { // To Appease Brandon - Felix
      * @param color color of card (will change to sprite/image)
      */
 
-    Card(int pos, int y, Color color, String minionName){
+    Card(int pos, int y, Color color, String name, String type){
         this.pos = pos;
         this.x = cardStart+width*pos+margin*(pos+1);
         this.start = cardStart+width*pos+margin*(pos+1);
         this.buffer = y;
         this.y = buffer+margin;
-        this.minionName = minionName;
+        this.name = name;
+        this.type = type;
 
         this.color = color;
         this.borderColor = Color.BLACK;
@@ -69,7 +74,7 @@ class Card { // To Appease Brandon - Felix
         bounds.setWidth(width);
         bounds.setHeight(height);
 
-        this.sprite = new Sprite(new Texture(Gdx.files.internal(minionName+"_front.png")));
+        this.sprite = new Sprite(new Texture(Gdx.files.internal(name+"_front.png")));
 
         sprite.scale(field.height/1000);
         sprite.setCenter(this.x+width/2,this.y+height/2);
@@ -153,8 +158,12 @@ class Card { // To Appease Brandon - Felix
         return selected;
     }
 
-    String getMinionName(){
-        return minionName;
+    String getName(){
+        return name;
+    }
+
+    String getType(){
+        return type;
     }
 
     /**
