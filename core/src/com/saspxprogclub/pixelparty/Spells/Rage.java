@@ -25,12 +25,12 @@ public class Rage extends Spell {
     }
 
     public void effect(Minion minion) {
-        minion.setDamage((int)(minion.getData().get(Minion.ATTACKSPEED)/1.5));
-        minion.setDamage((int)(minion.getData().get(Minion.VELY)*1.5));
+        minion.setDamage((int)(minion.getPermanentData().get(Minion.ATTACKSPEED)/1.5));
+        minion.setVelocityY((int)(minion.getPermanentData().get(Minion.VELY)*1.5));
     }
 
     public void end(Minion minion){
-        minion.setDamage(minion.getData().get(Minion.ATTACKSPEED));
-        minion.setDamage(minion.getData().get(Minion.VELY));
+        minion.setDamage(minion.getPermanentData().get(Minion.ATTACKSPEED));
+        minion.setVelocityY(minion.getPermanentData().get(Minion.VELY));
     }
 }

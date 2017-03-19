@@ -136,7 +136,7 @@ public abstract class Minion extends GameObject {
         data.put(ATTACKSPEED, (int)this.attackSpeed);
     }
 
-    public HashMap<String, Integer> getData(){
+    public HashMap<String, Integer> getPermanentData(){
         return data;
     }
 
