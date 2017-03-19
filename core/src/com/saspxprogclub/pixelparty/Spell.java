@@ -97,4 +97,8 @@ public abstract class Spell extends GameObject {
             return false;
         }
     }
+
+    public int getCost(){
+        return cost;
+    }
 }

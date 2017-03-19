@@ -14,7 +14,7 @@ import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
 
 public class Rage extends Spell {
 
-    private static float radius = field.height/10f; //inverse
+    private static float radius = field.height/60f; //inverse
     private static int cost = 4;
     private static int duration = 2;
     private static String name = "rage";
