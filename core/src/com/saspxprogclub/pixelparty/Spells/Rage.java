@@ -17,7 +17,7 @@ public class Rage extends Spell {
     private static float radius = field.height/60f; //inverse
     private static int cost = 4;
     private static int duration = 2;
-    private static String name = "rage";
+    private static String name = Spell.RAGE;
 
 
     public Rage(Vector2 pos, Color color, boolean owned, int level) {

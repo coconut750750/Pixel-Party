@@ -1,8 +1,14 @@
 package com.saspxprogclub.pixelparty;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import static com.saspxprogclub.pixelparty.PixelPartyGame.field;
 
 /***
  * Created by Brandon on 3/2/17.
@@ -24,6 +30,7 @@ public abstract class Spell extends GameObject {
     private Color color;
     private boolean owned;
     private int level;
+    private Sprite sprite;
 
     public Spell(float radius, int cost, int duration, String name, Vector2 pos, Color color, boolean owned, int level) {
         bounds = new Circle();
@@ -37,6 +44,15 @@ public abstract class Spell extends GameObject {
         this.owned = owned;
         this.level = level;
         setBounds(pos.x, pos.y);
+
+        Sprite sprite;
+        if(owned){
+            sprite = new Sprite(new Texture(Gdx.files.internal(name+"_back.png")));
+        } else {
+            sprite = new Sprite(new Texture(Gdx.files.internal(name+"_front.png")));
+        }
+        sprite.scale(field.height/1000f);
+        this.sprite = sprite;
 
     }
 
@@ -88,6 +104,10 @@ public abstract class Spell extends GameObject {
 
     public abstract void end(Minion minion);
 
+    public Sprite getSprite(){
+        return sprite;
+    }
+
     boolean update(float dt){
         if(duration > 0){
             subtractDuration(dt);
@@ -100,5 +120,10 @@ public abstract class Spell extends GameObject {
 
     public int getCost(){
         return cost;
+    }
+
+    public boolean contains(Minion m){
+        Rectangle tempBounds = new Rectangle(getX()-radius, getY()-radius, radius*2, radius*2);
+        return tempBounds.contains((Rectangle)(m.getBounds()));
     }
 }

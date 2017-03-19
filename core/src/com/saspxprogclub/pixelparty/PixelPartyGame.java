@@ -180,38 +180,8 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 	public void resume() {}
 
 	private void update(float dt){
-		List<Minion> tempMinions = new ArrayList<Minion>();
-		for(Minion m : minions){
-			if(m.update(dt, field.height)){
-				tempMinions.add(m);
-			}
-			for(Minion other : enemyMinions){
-				if(m.collideWith(other)){
-					other.subtractHealth(m.getDamage(dt));
-				}
-				if(other.collideWith(m)){
-					m.subtractHealth(other.getDamage(dt));
-				}
-			}
-			for(Tower tower : enemyTowers){
-				if(m.collideWith(tower) && tower.isAlive()){
-					tower.subtractHealth(m.getDamage(dt));
-				}
-			}
-		}
-		minions = tempMinions;
-		tempMinions = new ArrayList<Minion>();
-		for(Minion m : enemyMinions){
-			if(m.update(dt, field.height)){
-				tempMinions.add(m);
-			}
-			for(Tower tower : towers){
-				if(m.collideWith(tower) && tower.isAlive()){
-					tower.subtractHealth(m.getDamage(dt));
-				}
-			}
-		}
-		enemyMinions = tempMinions;
+		updateMinions(dt);
+		updateSpell(dt);
 
 		if (cardsNeeded.size() == 0){
 			currentRegen = cardRegen;
@@ -268,6 +238,61 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		mana.update(dt);
 	}
 
+	private void updateMinions(float dt){
+		List<Minion> tempMinions = new ArrayList<Minion>();
+		for(Minion m : minions){
+			if(m.update(dt, field.height)){
+				tempMinions.add(m);
+			}
+			for(Minion other : enemyMinions){
+				if(m.collideWith(other)){
+					other.subtractHealth(m.getDamage(dt));
+				}
+				if(other.collideWith(m)){
+					m.subtractHealth(other.getDamage(dt));
+				}
+			}
+			for(Tower tower : enemyTowers){
+				if(m.collideWith(tower) && tower.isAlive()){
+					tower.subtractHealth(m.getDamage(dt));
+				}
+			}
+		}
+		minions = tempMinions;
+		tempMinions = new ArrayList<Minion>();
+		for(Minion m : enemyMinions){
+			if(m.update(dt, field.height)){
+				tempMinions.add(m);
+			}
+			for(Tower tower : towers){
+				if(m.collideWith(tower) && tower.isAlive()){
+					tower.subtractHealth(m.getDamage(dt));
+				}
+			}
+		}
+		enemyMinions = tempMinions;
+	}
+
+	private void updateSpell(float dt){
+		List<Spell> tempSpells = new ArrayList<Spell>();
+		for(Spell s : spells){
+			if(s.update(dt)){
+				tempSpells.add(s);
+			}
+			else {
+				continue;
+			}
+			for(Minion m : minions){
+				if(s.contains(m)){
+					s.effect(m);
+				}
+			}
+		}
+
+
+		spells = tempSpells;
+	}
+
 	private void draw(){
 		Gdx.gl.glClearColor(255f,255f,0f,1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -278,6 +303,7 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 		cardboard.draw(shapeRenderer);
 
 		drawMinions(true);
+		drawSpells();
 
 		drawCards(true);
 		shapeRenderer.end();
@@ -309,6 +335,12 @@ public class PixelPartyGame implements ApplicationListener, InputProcessor {
 			} else {
 				m.getSprite().draw(spriteBatch);
 			}
+		}
+	}
+
+	private void drawSpells(){
+		for(Spell s : spells){
+			s.getSprite().draw(spriteBatch);
 		}
 	}
 
